@@ -11,7 +11,7 @@ class DokterSeeder extends Seeder
     public function run(): void
     {
         // Buat akun user untuk dokter
-        $userId = DB::table('user')->insertGetId([
+        $userId = DB::table('users')->insertGetId([
             'nik'                => '3510000000000002',
             'no_kk'             => '3510000000000002',
             'username'          => 'dr. Siti Rahayu',

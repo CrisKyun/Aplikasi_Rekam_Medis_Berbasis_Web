@@ -11,7 +11,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // staff
-        DB::table('user')->insert([
+        DB::table('users')->insert([
             'nik'                 => '3510000000000001',
             'no_kk'              => '3510000000000001',
             'username'           => 'Staff Klinik',
@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
         ]);
 
         // Pasien contoh
-        DB::table('user')->insert([
+        DB::table('users')->insert([
             'nik'                => '3510123456789001',
             'no_kk'             => '3510123456789000',
             'username'          => 'Budi Santoso',
