@@ -14,14 +14,9 @@
         </h4>
         <small class="text-muted">{{ $pasien->status_hubungan }}</small>
     </div>
-    <div class="d-flex gap-2">
-        <a href="/pasien/{{ $pasien->id }}/edit" class="btn btn-warning btn-sm">
-            <i class="bi bi-pencil me-1"></i>Edit Data
-        </a>
-        <a href="/rekam-medis/{{ $pasien->id }}/tambah" class="btn btn-primary btn-sm">
-            <i class="bi bi-plus-circle me-1"></i>Tambah Rekam Medis
-        </a>
-    </div>
+    <a href="/pasien/{{ $pasien->id }}/edit" class="btn btn-warning btn-sm">
+        <i class="bi bi-pencil me-1"></i>Edit Data
+    </a>
 </div>
 
 <div class="row g-4">
@@ -84,38 +79,30 @@
                 @forelse($pasien->rekamMedis->sortByDesc('tanggal_periksa') as $rm)
                 <div class="card mb-3 border-start border-primary border-3">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <span class="badge bg-primary mb-1">
-                                    {{ \Carbon\Carbon::parse($rm->tanggal_periksa)->format('d M Y') }}
-                                </span>
-                                <p class="mb-1 small">
-                                    <i class="bi bi-person-badge me-1 text-muted"></i>
-                                    <strong>Dokter:</strong> {{ $rm->dokter }}
-                                </p>
-                                <p class="mb-1 small">
-                                    <i class="bi bi-chat-left-text me-1 text-muted"></i>
-                                    <strong>Keluhan:</strong> {{ $rm->keluhan }}
-                                </p>
-                                <p class="mb-0 small">
-                                    <i class="bi bi-file-medical me-1 text-muted"></i>
-                                    <strong>Diagnosis:</strong> {{ $rm->diagnosis }}
-                                </p>
-                            </div>
-                            <a href="/rekam-medis/{{ $rm->id }}/detail"
-                                class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-eye me-1"></i>Detail
-                            </a>
-                        </div>
+                        <span class="badge bg-primary mb-1">
+                            {{ \Carbon\Carbon::parse($rm->tanggal_periksa)->format('d M Y') }}
+                        </span>
+                        <p class="mb-1 small">
+                            <strong>Dokter:</strong> {{ $rm->dokter }}
+                        </p>
+                        <p class="mb-1 small">
+                            <strong>Keluhan:</strong> {{ $rm->keluhan }}
+                        </p>
+                        <p class="mb-1 small">
+                            <strong>Diagnosis:</strong> {{ $rm->diagnosis }}
+                        </p>
+                        @if($rm->resep_obat)
+                        <p class="mb-0 small">
+                            <strong>Resep:</strong> {{ $rm->resep_obat }}
+                        </p>
+                        @endif
                     </div>
                 </div>
                 @empty
                 <div class="text-center text-muted py-4">
                     <i class="bi bi-clipboard2-x" style="font-size: 2rem;"></i>
                     <p class="mt-2">Belum ada riwayat rekam medis.</p>
-                    <a href="/rekam-medis/{{ $pasien->id }}/tambah" class="btn btn-primary btn-sm">
-                        <i class="bi bi-plus-circle me-1"></i>Tambah Sekarang
-                    </a>
+                    <small>Hubungi klinik untuk informasi lebih lanjut.</small>
                 </div>
                 @endforelse
             </div>

@@ -10,26 +10,25 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Akun Staff (dokter/admin)
-        // Akun Staff
-        DB::table('users')->insert([
-            'nik'                => '0000000000000001',
-            'no_kk'             => '0000000000000001',
-            'username'          => 'Staff Klinik',
-            'password'          => Hash::make('staff123'),
-            'email'             => 'staff@klinik.com',
-            'role_id'           => 1, // dokter
+        // staff
+        DB::table('user')->insert([
+            'nik'                 => '3510000000000001',
+            'no_kk'              => '3510000000000001',
+            'username'           => 'Staff Klinik',
+            'password'           => Hash::make('staff123'),
+            'email'              => 'staff@klinik.com',
+            'role_id'            => 1,
             'tanggal_registrasi' => now(),
         ]);
 
-        // Akun Pasien contoh
-        DB::table('users')->insert([
+        // Pasien contoh
+        DB::table('user')->insert([
             'nik'                => '3510123456789001',
             'no_kk'             => '3510123456789000',
             'username'          => 'Budi Santoso',
             'password'          => Hash::make('budi123'),
             'email'             => 'budi@email.com',
-            'role_id'           => 2, // pasien
+            'role_id'           => 3,
             'tanggal_registrasi' => now(),
         ]);
     }

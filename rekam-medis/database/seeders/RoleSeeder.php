@@ -10,8 +10,9 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         DB::table('roles')->insert([
-            ['nama_role' => 'staff'],   // id: 1 → dokter + admin digabung
-            ['nama_role' => 'pasien'],  // id: 2
+            ['nama_role' => 'staff'],
+            ['nama_role' => 'dokter'],
+            ['nama_role' => 'pasien'],
         ]);
     }
 }

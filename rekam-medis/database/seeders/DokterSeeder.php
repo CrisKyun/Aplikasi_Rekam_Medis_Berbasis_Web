@@ -10,9 +10,20 @@ class DokterSeeder extends Seeder
 {
     public function run(): void
     {
-        // Data dokter (tidak perlu akun user lagi)
+        // Buat akun user untuk dokter
+        $userId = DB::table('user')->insertGetId([
+            'nik'                => '3510000000000002',
+            'no_kk'             => '3510000000000002',
+            'username'          => 'dr. Siti Rahayu',
+            'password'          => Hash::make('dokter123'),
+            'email'             => 'siti@klinik.com',
+            'role_id'           => 2,
+            'tanggal_registrasi'=> now(),
+        ]);
+
+        // Data dokter
         $dokterId = DB::table('dokter')->insertGetId([
-            'user_id'      => null,
+            'user_id'      => $userId,
             'nama_dokter'  => 'dr. Siti Rahayu',
             'no_hp'        => '081234567890',
             'bidang_medis' => 'Umum',
