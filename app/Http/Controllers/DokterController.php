@@ -7,6 +7,7 @@ use App\Models\Pasien;
 use App\Models\RekamMedis;
 use App\Models\Dokter;
 use App\Models\User;
+use App\Models\Pendaftaran;
 
 class DokterController extends Controller
 {
@@ -70,7 +71,15 @@ class DokterController extends Controller
             'catatan_dokter'  => $request->catatan_dokter,
         ]);
 
-        return redirect('/dokter/pasien/' . $pasienId)->with('success', 'Rekam medis berhasil ditambahkan!');
+        // Otomatis aktifkan akun pasien setelah rekam medis pertama
+        $pasien = Pasien::findOrFail($pasienId);
+        $user   = User::find($pasien->user_id);
+
+        if ($user && $user->status === 'nonaktif') {
+            $user->update(['status' => 'aktif']);
+        }
+
+        return redirect('/dokter/pasien/' . $pasienId)->with('success', 'Rekam medis berhasil ditambahkan & akun pasien diaktifkan!');
     }
 
     public function rekamMedisEdit($id)
@@ -115,6 +124,24 @@ class DokterController extends Controller
         $rekamMedis->delete();
 
         return redirect('/dokter/pasien/' . $pasienId)->with('success', 'Rekam medis berhasil dihapus!');
+    }
+
+    // ================================
+    // PENGATURAN STATUS PASIEN
+    // ================================
+    public function toggleStatusPasien($id)
+    {
+        $pasien = Pasien::findOrFail($id);
+        $user   = User::findOrFail($pasien->user_id);
+
+        $statusBaru = $user->status === 'aktif' ? 'nonaktif' : 'aktif';
+
+        // Pakai query langsung biar pasti tersimpan
+        User::where('id', $user->id)->update(['status' => $statusBaru]);
+
+        $pesan = $statusBaru === 'aktif' ? 'diaktifkan' : 'dinonaktifkan';
+
+        return redirect('/dokter/pasien/' . $id)->with('success', "Akun pasien berhasil {$pesan}!");
     }
 
     // ================================
@@ -267,5 +294,51 @@ class DokterController extends Controller
     {
         Dokter::findOrFail($id)->delete();
         return redirect('/dokter/kelola-dokter')->with('success', 'Data dokter berhasil dihapus!');
+    }
+
+    // ================================
+    // ANTRIAN
+    // ================================
+    public function antrianIndex(Request $request)
+    {
+        $tanggal = $request->tanggal ?? now()->format('Y-m-d');
+        $dokterId = $request->dokter_id;
+
+        $antrian = Pendaftaran::with(['pasien', 'dokter'])
+            ->when($dokterId, fn($q) => $q->where('dokter_id', $dokterId))
+            ->where('tanggal_kunjungan', $tanggal)
+            ->orderBy('nomor_antrian')
+            ->get();
+
+        $dokter = Dokter::all();
+
+        return view('dokter.antrian.index', compact('antrian', 'tanggal', 'dokter', 'dokterId'));
+    }
+
+    public function antrianPanggil($id)
+    {
+        $antrian = Pendaftaran::findOrFail($id);
+        $antrian->update(['status_antrian' => 'dipanggil']);
+
+        return redirect()->back()->with('success', 'Pasien berhasil dipanggil!');
+    }
+
+    public function antrianSelesai($id)
+    {
+        $antrian = Pendaftaran::findOrFail($id);
+        $antrian->update(['status_antrian' => 'selesai']);
+
+        return redirect()->back()->with('success', 'Antrian selesai!');
+    }
+
+    public function antrianBatal(Request $request, $id)
+    {
+        $antrian = Pendaftaran::findOrFail($id);
+        $antrian->update([
+            'status_antrian'        => 'batal',
+            'keterangan_pembatalan' => $request->keterangan ?? 'Dibatalkan oleh dokter.',
+        ]);
+
+        return redirect()->back()->with('success', 'Antrian dibatalkan.');
     }
 }

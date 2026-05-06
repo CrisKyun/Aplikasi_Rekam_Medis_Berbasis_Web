@@ -92,8 +92,11 @@
                             <strong>Diagnosis:</strong> {{ $rm->diagnosis }}
                         </p>
                         @if($rm->resep_obat)
-                        <p class="mb-0 small">
+                        <p class="mb-1 small">
                             <strong>Resep:</strong> {{ $rm->resep_obat }}
+                        </p>
+                        <p class="mb-0 small">
+                            <strong>Catatan:</strong> {{ $rm->catatan_dokter }}
                         </p>
                         @endif
                     </div>

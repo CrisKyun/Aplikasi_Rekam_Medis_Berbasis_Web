@@ -68,6 +68,7 @@ return new class extends Migration
             $table->string('password', 255);
             $table->string('email', 50)->nullable();
             $table->unsignedBigInteger('role_id')->default(3);
+            $table->enum('status', ['aktif', 'nonaktif'])->default('nonaktif');
             $table->datetime('tanggal_registrasi')->useCurrent();
             $table->timestamps();
         });

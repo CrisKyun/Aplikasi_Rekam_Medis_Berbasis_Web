@@ -13,4 +13,9 @@ class Dokter extends Model
     {
         return $this->hasMany(JadwalDokter::class);
     }
+
+    public function pendaftaran()
+    {
+        return $this->hasMany(Pendaftaran::class);
+    }
 }

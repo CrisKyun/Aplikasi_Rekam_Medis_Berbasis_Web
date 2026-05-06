@@ -19,6 +19,9 @@
             </a>
             <div class="d-flex gap-2">
                 @if(session('user_id'))
+                <a href="/antrian" class="btn btn-outline-light btn-sm me-2">
+                    <i class="bi bi-ticket-perforated me-1"></i>Antrian
+                </a>
                 <span class="navbar-text text-white me-3">
                     <i class="bi bi-person-circle me-1"></i>{{ session('user_nama') }}
                 </span>

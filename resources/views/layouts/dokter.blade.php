@@ -60,10 +60,14 @@
                 <i class="bi bi-people-fill me-2"></i>Data Pasien
             </a>
 
-            {{-- MENU BARU --}}
             <a href="/dokter/kelola-dokter"
                 class="{{ request()->is('dokter/kelola-dokter*') ? 'active' : '' }}">
                 <i class="bi bi-person-badge-fill me-2"></i>Kelola Dokter
+            </a>
+
+            <a href="/dokter/antrian"
+                class="{{ request()->is('dokter/antrian*') ? 'active' : '' }}">
+                <i class="bi bi-ticket-perforated-fill me-2"></i>Antrian
             </a>
 
             <a href="/dokter/klinik"

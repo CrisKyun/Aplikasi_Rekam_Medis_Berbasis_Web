@@ -17,9 +17,13 @@ return new class extends Migration
             $table->foreignId('dokter_id')->constrained('dokter')->onDelete('cascade');
             $table->date('tanggal_kunjungan');
             $table->integer('nomor_antrian');
-            $table->string('jam_mulai', 45)->nullable();
-            $table->time('jam_selesai')->nullable();
-            $table->enum('status_antrian', ['Menunggu', 'Sedang Diperiksa', 'Selesai', 'Batal'])->default('Menunggu');
+            $table->time('estimasi_jam');
+            $table->enum('status_antrian', [
+                'menunggu',
+                'dipanggil',
+                'selesai',
+                'batal'
+            ])->default('menunggu');
             $table->text('keterangan_pembatalan')->nullable();
             $table->timestamps();
         });

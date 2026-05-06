@@ -34,6 +34,7 @@
                         <th>Jenis Kelamin</th>
                         <th>Tgl Lahir</th>
                         <th>Hubungan KK</th>
+                        <th>Status</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -45,8 +46,14 @@
                         <td>{{ $p->nik }}</td>
                         <td>{{ $p->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
                         <td>{{ \Carbon\Carbon::parse($p->tanggal_lahir)->format('d M Y') }}</td>
+                        <td><span class="badge bg-secondary">{{ $p->status_hubungan }}</span></td>
                         <td>
-                            <span class="badge bg-secondary">{{ $p->status_hubungan }}</span>
+                            @php $up = \App\Models\User::find($p->user_id); @endphp
+                            @if($up)
+                            <span class="badge {{ $up->status === 'aktif' ? 'bg-success' : 'bg-danger' }}">
+                                {{ ucfirst($up->status) }}
+                            </span>
+                            @endif
                         </td>
                         <td>
                             <a href="/dokter/pasien/{{ $p->id }}"

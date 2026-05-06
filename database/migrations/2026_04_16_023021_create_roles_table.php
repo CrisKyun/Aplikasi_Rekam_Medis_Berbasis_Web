@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_role', 20); // admin, dokter, pasien
+            $table->string('nama_role', 20); 
             $table->timestamps();
         });
             // Tambahkan foreign key ke users SETELAH roles dibuat

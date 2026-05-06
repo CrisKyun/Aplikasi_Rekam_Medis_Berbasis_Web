@@ -10,15 +10,15 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Akun Staff (dokter/admin)
-        // Akun Staff
+        // Akun Staff/Dokter
         DB::table('users')->insert([
             'nik'                => '0000000000000001',
             'no_kk'             => '0000000000000001',
             'username'          => 'Staff Klinik',
             'password'          => Hash::make('staff123'),
             'email'             => 'staff@klinik.com',
-            'role_id'           => 1, // dokter
+            'role_id'           => 1,
+            'status'            => 'aktif', // ← staff selalu aktif
             'tanggal_registrasi' => now(),
         ]);
 
@@ -29,7 +29,8 @@ class UserSeeder extends Seeder
             'username'          => 'Budi Santoso',
             'password'          => Hash::make('budi123'),
             'email'             => 'budi@email.com',
-            'role_id'           => 2, // pasien
+            'role_id'           => 2,
+            'status'            => 'aktif', // ← contoh sudah aktif
             'tanggal_registrasi' => now(),
         ]);
     }

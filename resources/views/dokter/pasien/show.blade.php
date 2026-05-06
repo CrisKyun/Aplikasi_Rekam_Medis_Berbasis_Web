@@ -62,9 +62,55 @@
                             <span class="badge bg-secondary">{{ $pasien->status_hubungan }}</span>
                         </td>
                     </tr>
+                    {{-- Status Akun --}}
+                    <tr>
+                        <td class="text-muted">Status Akun</td>
+                        <td>
+                            @php $userPasien = \App\Models\User::find($pasien->user_id); @endphp
+                            @if($userPasien)
+                            <span class="badge {{ $userPasien->status === 'aktif' ? 'bg-success' : 'bg-danger' }}">
+                                {{ ucfirst($userPasien->status) }}
+                            </span>
+                            @endif
+                        </td>
+                    </tr>
                 </table>
             </div>
         </div>
+        {{-- Toggle Status Akun --}}
+        @php $userPasien = \App\Models\User::find($pasien->user_id); @endphp
+        @if($userPasien)
+        <div class="card shadow-sm border-0 mt-3">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="fw-bold mb-1">
+                        Status Akun:
+                        <span class="badge {{ $userPasien->status === 'aktif' ? 'bg-success' : 'bg-danger' }}">
+                            {{ ucfirst($userPasien->status) }}
+                        </span>
+                    </h6>
+                    <small class="text-muted">
+                        {{ $userPasien->status === 'aktif' 
+                    ? 'Pasien dapat login dan menggunakan layanan.' 
+                    : 'Pasien tidak dapat login. Aktifkan jika ingin berobat.' }}
+                    </small>
+                </div>
+                @php
+                $konfirmasi = $userPasien->status === 'aktif' ? 'menonaktifkan' : 'mengaktifkan';
+                @endphp
+                <form action="/dokter/pasien/{{ $pasien->id }}/toggle-status" method="POST"
+                    onsubmit="return confirm('Yakin ingin {{ $konfirmasi }} akun pasien ini?')">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit"
+                        class="btn btn-sm {{ $userPasien->status === 'aktif' ? 'btn-danger' : 'btn-success' }}">
+                        <i class="bi bi-{{ $userPasien->status === 'aktif' ? 'x-circle' : 'check-circle' }} me-1"></i>
+                        {{ $userPasien->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}
+                    </button>
+                </form>
+            </div>
+        </div>
+        @endif
     </div>
 
     {{-- Rekam Medis --}}

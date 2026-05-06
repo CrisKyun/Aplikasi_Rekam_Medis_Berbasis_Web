@@ -31,17 +31,21 @@ class AuthController extends Controller
             'password.min'      => 'Password minimal 6 karakter.',
         ]);
 
-        // Cari user berdasarkan NIK
         $user = User::where('nik', $request->nik)->first();
 
-        // Cek apakah NIK & password cocok
         if (!$user || !Hash::check($request->password, $user->password)) {
             return back()->withErrors([
                 'nik' => 'NIK atau password salah.',
             ])->withInput();
         }
 
-        // Simpan session
+        // Cek status akun
+        if ($user->status === 'nonaktif') {
+            return back()->withErrors([
+                'nik' => 'Akun Anda nonaktif. Silakan hubungi klinik untuk mengaktifkan kembali.',
+            ])->withInput();
+        }
+
         session([
             'user_id'   => $user->id,
             'user_nama' => $user->username,
@@ -104,7 +108,7 @@ class AuthController extends Controller
             'username'          => $request->username,
             'password'          => Hash::make($request->password),
             'email'             => $request->email,
-            'role_id'           => 3, // role pasien
+            'role_id'           => 2,
             'tanggal_registrasi' => now(),
         ]);
 

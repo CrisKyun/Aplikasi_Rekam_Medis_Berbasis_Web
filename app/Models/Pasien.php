@@ -42,4 +42,9 @@ class Pasien extends Model
     {
         return $this->hasMany(RekamMedis::class);
     }
+
+    public function pendaftaran()
+    {
+        return $this->hasMany(Pendaftaran::class);
+    }
 }

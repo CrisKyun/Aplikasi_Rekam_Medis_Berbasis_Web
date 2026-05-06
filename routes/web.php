@@ -8,6 +8,8 @@ use App\Http\Controllers\PasienController;
 use App\Http\Controllers\RekamMedisController;
 use App\Http\Controllers\DokterAuthController;
 use App\Http\Controllers\DokterController;
+use App\Http\Controllers\AntriController;
+
 // ================================
 // PUBLIK (tanpa login)
 // ================================
@@ -43,6 +45,12 @@ Route::middleware('auth.session')->group(function () {
     Route::get('/rekam-medis/{id}/edit', [RekamMedisController::class, 'edit'])->name('rekam-medis.edit');
     Route::put('/rekam-medis/{id}/edit', [RekamMedisController::class, 'update'])->name('rekam-medis.update');
     Route::delete('/rekam-medis/{id}/hapus', [RekamMedisController::class, 'destroy'])->name('rekam-medis.destroy');
+
+    // ANTRIAN PASIEN 
+    Route::get('/antrian', [AntriController::class, 'index'])->name('antrian.index');
+    Route::get('/antrian/daftar', [AntriController::class, 'create'])->name('antrian.create');
+    Route::post('/antrian/daftar', [AntriController::class, 'store'])->name('antrian.store');
+    Route::patch('/antrian/{id}/batal', [AntriController::class, 'batal'])->name('antrian.batal');
 });
 
 
@@ -62,6 +70,9 @@ Route::middleware('auth.dokter')->group(function () {
     Route::get('/dokter/pasien', [DokterController::class, 'pasienIndex'])->name('dokter.pasien.index');
     Route::get('/dokter/pasien/{id}', [DokterController::class, 'pasienShow'])->name('dokter.pasien.show');
 
+    // Kelola status akun pasien
+    Route::patch('/dokter/pasien/{id}/toggle-status', [DokterController::class, 'toggleStatusPasien'])->name('dokter.pasien.toggle-status');
+
     // Kelola Rekam Medis
     Route::get('/dokter/pasien/{pasienId}/rekam-medis/tambah', [DokterController::class, 'rekamMedisCreate'])->name('dokter.rekam-medis.create');
     Route::post('/dokter/pasien/{pasienId}/rekam-medis/tambah', [DokterController::class, 'rekamMedisStore'])->name('dokter.rekam-medis.store');
@@ -80,4 +91,10 @@ Route::middleware('auth.dokter')->group(function () {
     Route::get('/dokter/kelola-dokter/{id}/edit', [DokterController::class, 'dokterEdit'])->name('dokter.dokter.edit');
     Route::put('/dokter/kelola-dokter/{id}/edit', [DokterController::class, 'dokterUpdate'])->name('dokter.dokter.update');
     Route::delete('/dokter/kelola-dokter/{id}/hapus', [DokterController::class, 'dokterDestroy'])->name('dokter.dokter.destroy');
+
+    // ANTRIAN DOKTER
+    Route::get('/dokter/antrian', [DokterController::class, 'antrianIndex'])->name('dokter.antrian.index');
+    Route::patch('/dokter/antrian/{id}/panggil', [DokterController::class, 'antrianPanggil'])->name('dokter.antrian.panggil');
+    Route::patch('/dokter/antrian/{id}/selesai', [DokterController::class, 'antrianSelesai'])->name('dokter.antrian.selesai');
+    Route::patch('/dokter/antrian/{id}/batal', [DokterController::class, 'antrianBatal'])->name('dokter.antrian.batal');
 });
