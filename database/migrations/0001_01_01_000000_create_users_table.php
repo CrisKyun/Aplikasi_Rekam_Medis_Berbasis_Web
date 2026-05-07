@@ -70,6 +70,7 @@ return new class extends Migration
             $table->unsignedBigInteger('role_id')->default(3);
             $table->enum('status', ['aktif', 'nonaktif'])->default('nonaktif');
             $table->datetime('tanggal_registrasi')->useCurrent();
+            $table->rememberToken();
             $table->timestamps();
         });
     }

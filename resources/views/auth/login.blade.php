@@ -42,6 +42,8 @@
                         @error('password')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <p class="text-end small mb-0 pt-2"><a href="{{ route('password.request') }}">Lupa Password</a>
+                    </p>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100">

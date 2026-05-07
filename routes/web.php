@@ -9,6 +9,7 @@ use App\Http\Controllers\RekamMedisController;
 use App\Http\Controllers\DokterAuthController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\AntriController;
+use App\Http\Controllers\ForgotPasswordController;
 
 // ================================
 // PUBLIK (tanpa login)
@@ -18,7 +19,10 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
-
+Route::get('/lupa-password', [ForgotPasswordController::class, 'showForgotForm'])->name('password.request');
+Route::post('/lupa-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 // ================================
 // PRIVATE (harus login)
 // ================================

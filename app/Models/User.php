@@ -16,7 +16,7 @@ class User extends Authenticatable
         'tanggal_registrasi',
     ];
 
-    protected $hidden = ['password'];
+    protected $hidden = ['password','remember_token'];
 
     public function pasien()
     {
