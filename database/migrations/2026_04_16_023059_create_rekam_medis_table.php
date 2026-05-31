@@ -22,7 +22,9 @@ return new class extends Migration
             $table->decimal('berat_badan', 5, 2)->nullable();
             $table->decimal('tinggi_badan', 5, 2)->nullable();
             $table->decimal('suhu_tubuh', 4, 1)->nullable();
-            $table->text('diagnosis');
+            $table->string('kode_icd10', 10)->nullable();
+            $table->string('nama_icd10', 255)->nullable();
+            $table->text('diagnosis')->nullable();
             $table->text('resep_obat')->nullable();
             $table->text('catatan_dokter')->nullable();
             $table->timestamps();

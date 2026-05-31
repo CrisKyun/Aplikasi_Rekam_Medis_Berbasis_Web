@@ -41,6 +41,10 @@
                     <i class="bi bi-clock me-1 text-muted"></i>
                     Estimasi: <strong>{{ \Carbon\Carbon::parse($a->estimasi_jam)->format('H:i') }} WIB</strong>
                 </p>
+                <p class="mb-0 small mt-1">
+                    <i class="bi bi-chat-left-text me-1 text-muted"></i>
+                    <span class="text-muted">Keluhan:</span> {{ $a->keluhan_awal ?? '-' }}
+                </p>
             </div>
 
             {{-- Status & Aksi --}}

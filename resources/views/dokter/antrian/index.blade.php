@@ -74,10 +74,12 @@
                     <tr>
                         <th>No.</th>
                         <th>Pasien</th>
+                        <th>Keluhan Awal</th>
                         <th>Dokter</th>
                         <th>Estimasi</th>
                         <th>Status</th>
                         <th>Aksi</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -89,6 +91,11 @@
                         <td>
                             <p class="mb-0 fw-semibold">{{ $a->pasien->nama_lengkap }}</p>
                             <small class="text-muted">{{ $a->pasien->nik }}</small>
+                        </td>
+                        <td>
+                            <span class="text-wrap" style="max-width: 200px; display: block;">
+                                {{ $a->keluhan_awal ?? '-' }}
+                            </span>
                         </td>
                         <td>
                             <p class="mb-0">{{ $a->dokter->nama_dokter }}</p>
@@ -135,7 +142,21 @@
                                     </button>
                                 </form>
                                 @endif
+
+                                @if(in_array($a->status_antrian, ['menunggu', 'dipanggil']))
+                                <a href="/dokter/antrian/{{ $a->id }}/edit-estimasi"
+                                    class="btn btn-outline-secondary btn-sm"
+                                    title="Edit Estimasi">
+                                    <i class="bi bi-clock"></i>
+                                </a>
+                                @endif
                             </div>
+                        </td>
+                        <td>
+                            <a href="/dokter/pasien/{{ $a->id }}"
+                                class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-eye me-1"></i>Detail
+                            </a>
                         </td>
                     </tr>
                     @empty

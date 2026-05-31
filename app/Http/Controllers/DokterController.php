@@ -34,10 +34,49 @@ class DokterController extends Controller
 
     public function pasienShow($id)
     {
-        $pasien = Pasien::with('rekamMedis')->findOrFail($id);
-        $dokter = Dokter::all();
+        $pasien = Pasien::with(['rekamMedis' => function ($q) {
+            $q->orderBy('tanggal_periksa', 'asc');
+        }, 'rekamMedis'])->findOrFail($id);
 
-        return view('dokter.pasien.show', compact('pasien', 'dokter'));
+        $dokter     = Dokter::all();
+        $grafikData = $this->buildGrafikData($pasien->rekamMedis);
+
+        return view('dokter.pasien.show', compact('pasien', 'dokter', 'grafikData'));
+    }
+
+    private function buildGrafikData($rekamMedis)
+    {
+        $labels     = [];
+        $beratBadan = [];
+        $suhuTubuh  = [];
+        $sistolik   = [];
+        $diastolik  = [];
+        $bmi        = [];
+
+        foreach ($rekamMedis as $rm) {
+            $labels[] = \Carbon\Carbon::parse($rm->tanggal_periksa)->format('d M Y');
+
+            $beratBadan[] = $rm->berat_badan ?? null;
+            $suhuTubuh[]  = $rm->suhu_tubuh ?? null;
+
+            if ($rm->tekanan_darah && str_contains($rm->tekanan_darah, '/')) {
+                [$sis, $dia] = explode('/', $rm->tekanan_darah);
+                $sistolik[]  = (int) trim($sis);
+                $diastolik[] = (int) trim($dia);
+            } else {
+                $sistolik[]  = null;
+                $diastolik[] = null;
+            }
+
+            if ($rm->berat_badan && $rm->tinggi_badan) {
+                $tinggim = $rm->tinggi_badan / 100;
+                $bmi[]   = round($rm->berat_badan / ($tinggim * $tinggim), 1);
+            } else {
+                $bmi[] = null;
+            }
+        }
+
+        return compact('labels', 'beratBadan', 'suhuTubuh', 'sistolik', 'diastolik', 'bmi');
     }
 
     public function rekamMedisCreate($pasienId)
@@ -48,39 +87,58 @@ class DokterController extends Controller
         return view('dokter.rekam-medis.create', compact('pasien', 'dokter'));
     }
 
-    public function rekamMedisStore(Request $request, $pasienId)
-    {
-        $request->validate([
-            'tanggal_periksa' => 'required|date',
-            'dokter'          => 'required|string',
-            'keluhan'         => 'required|string',
-            'diagnosis'       => 'required|string',
+public function rekamMedisStore(Request $request, $pasienId)
+{
+    $request->validate([
+        'tanggal_periksa' => 'required|date',
+        'dokter'          => 'required|string',
+        'keluhan'         => 'required|string',
+        'kode_icd10'      => 'nullable|string|max:10',
+        'nama_icd10'      => 'nullable|string|max:255',
+        'diagnosis'       => 'nullable|string',
+    ]);
+
+    // Ambil pasien DULU sebelum create
+    $pasien = Pasien::findOrFail($pasienId);
+
+    // Simpan ke variabel $rekamMedis
+    $rekamMedis = RekamMedis::create([
+        'pasien_id'       => $pasienId,
+        'tanggal_periksa' => $request->tanggal_periksa,
+        'dokter'          => $request->dokter,
+        'keluhan'         => $request->keluhan,
+        'tekanan_darah'   => $request->tekanan_darah,
+        'berat_badan'     => $request->berat_badan,
+        'tinggi_badan'    => $request->tinggi_badan,
+        'suhu_tubuh'      => $request->suhu_tubuh,
+        'kode_icd10'      => $request->kode_icd10,
+        'nama_icd10'      => $request->nama_icd10,
+        'diagnosis'       => $request->diagnosis,
+        'resep_obat'      => $request->resep_obat,
+        'catatan_dokter'  => $request->catatan_dokter,
+    ]);
+
+    // Sekarang $rekamMedis->id & $pasien->nama_lengkap sudah tersedia
+    \App\Helpers\ActivityHelper::log(
+        'tambah_rekam_medis',
+        'rekam_medis',
+        "Menambahkan rekam medis untuk pasien: {$pasien->nama_lengkap}",
+        $rekamMedis->id,
+        'RekamMedis'
+    );
+
+    // Otomatis aktifkan akun pasien
+    $user = User::find($pasien->user_id);
+    if ($user) {
+        User::where('id', $user->id)->update([
+            'status'     => 'aktif',
+            'expired_at' => null,
         ]);
-
-        RekamMedis::create([
-            'pasien_id'       => $pasienId,
-            'tanggal_periksa' => $request->tanggal_periksa,
-            'dokter'          => $request->dokter,
-            'keluhan'         => $request->keluhan,
-            'tekanan_darah'   => $request->tekanan_darah,
-            'berat_badan'     => $request->berat_badan,
-            'tinggi_badan'    => $request->tinggi_badan,
-            'suhu_tubuh'      => $request->suhu_tubuh,
-            'diagnosis'       => $request->diagnosis,
-            'resep_obat'      => $request->resep_obat,
-            'catatan_dokter'  => $request->catatan_dokter,
-        ]);
-
-        // Otomatis aktifkan akun pasien setelah rekam medis pertama
-        $pasien = Pasien::findOrFail($pasienId);
-        $user   = User::find($pasien->user_id);
-
-        if ($user && $user->status === 'nonaktif') {
-            $user->update(['status' => 'aktif']);
-        }
-
-        return redirect('/dokter/pasien/' . $pasienId)->with('success', 'Rekam medis berhasil ditambahkan & akun pasien diaktifkan!');
     }
+
+    return redirect('/dokter/pasien/' . $pasienId)
+        ->with('success', 'Rekam medis berhasil ditambahkan!');
+}
 
     public function rekamMedisEdit($id)
     {
@@ -98,7 +156,9 @@ class DokterController extends Controller
             'tanggal_periksa' => 'required|date',
             'dokter'          => 'required|string',
             'keluhan'         => 'required|string',
-            'diagnosis'       => 'required|string',
+            'kode_icd10'      => 'nullable|string|max:10',
+            'nama_icd10'      => 'nullable|string|max:255',
+            'diagnosis'       => 'nullable|string',
         ]);
 
         $rekamMedis->update([
@@ -109,10 +169,20 @@ class DokterController extends Controller
             'berat_badan'     => $request->berat_badan,
             'tinggi_badan'    => $request->tinggi_badan,
             'suhu_tubuh'      => $request->suhu_tubuh,
-            'diagnosis'       => $request->diagnosis,
+            'kode_icd10'    => $request->kode_icd10,
+            'nama_icd10'    => $request->nama_icd10,
+            'diagnosis'     => $request->diagnosis,
             'resep_obat'      => $request->resep_obat,
             'catatan_dokter'  => $request->catatan_dokter,
         ]);
+
+        \App\Helpers\ActivityHelper::log(
+            'edit_rekam_medis',
+            'rekam_medis',
+            "Mengubah rekam medis ID: {$id} pasien: {$rekamMedis->pasien->nama_lengkap}",
+            $id,
+            'RekamMedis'
+        );
 
         return redirect('/dokter/pasien/' . $rekamMedis->pasien_id)->with('success', 'Rekam medis berhasil diperbarui!');
     }
@@ -121,6 +191,13 @@ class DokterController extends Controller
     {
         $rekamMedis = RekamMedis::findOrFail($id);
         $pasienId   = $rekamMedis->pasien_id;
+        \App\Helpers\ActivityHelper::log(
+            'hapus_rekam_medis',
+            'rekam_medis',
+            "Menghapus rekam medis ID: {$id} pasien: {$rekamMedis->pasien->nama_lengkap}",
+            $id,
+            'RekamMedis'
+        );
         $rekamMedis->delete();
 
         return redirect('/dokter/pasien/' . $pasienId)->with('success', 'Rekam medis berhasil dihapus!');
@@ -138,6 +215,14 @@ class DokterController extends Controller
 
         // Pakai query langsung biar pasti tersimpan
         User::where('id', $user->id)->update(['status' => $statusBaru]);
+
+        \App\Helpers\ActivityHelper::log(
+            'toggle_status_pasien',
+            'pasien',
+            "Mengubah status akun pasien: {$pasien->nama_lengkap} menjadi {$statusBaru}",
+            $pasien->id,
+            'Pasien'
+        );
 
         $pesan = $statusBaru === 'aktif' ? 'diaktifkan' : 'dinonaktifkan';
 
@@ -320,6 +405,14 @@ class DokterController extends Controller
         $antrian = Pendaftaran::findOrFail($id);
         $antrian->update(['status_antrian' => 'dipanggil']);
 
+        \App\Helpers\ActivityHelper::log(
+            'panggil_antrian',
+            'antrian',
+            "Memanggil antrian no: {$antrian->nomor_antrian} pasien: {$antrian->pasien->nama_lengkap}",
+            $antrian->id,
+            'Pendaftaran'
+        );
+
         return redirect()->back()->with('success', 'Pasien berhasil dipanggil!');
     }
 
@@ -327,6 +420,14 @@ class DokterController extends Controller
     {
         $antrian = Pendaftaran::findOrFail($id);
         $antrian->update(['status_antrian' => 'selesai']);
+
+        \App\Helpers\ActivityHelper::log(
+            'selesai_antrian',
+            'antrian',
+            "Menyelesaikan antrian no: {$antrian->nomor_antrian} pasien: {$antrian->pasien->nama_lengkap}",
+            $antrian->id,
+            'Pendaftaran'
+        );
 
         return redirect()->back()->with('success', 'Antrian selesai!');
     }
@@ -340,5 +441,41 @@ class DokterController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Antrian dibatalkan.');
+    }
+
+    public function antrianEditEstimasi($id)
+    {
+        $antrian = Pendaftaran::with(['pasien', 'dokter'])->findOrFail($id);
+        return view('dokter.antrian.edit-estimasi', compact('antrian'));
+    }
+
+    public function antrianUpdateEstimasi(Request $request, $id)
+    {
+        $request->validate([
+            'jam_mulai_baru' => 'required|date_format:H:i',
+        ], [
+            'jam_mulai_baru.required'    => 'Jam mulai wajib diisi.',
+            'jam_mulai_baru.date_format' => 'Format jam tidak valid.',
+        ]);
+
+        $antrian = Pendaftaran::findOrFail($id);
+
+        // Ambil semua antrian di dokter & tanggal yang sama, urut nomor
+        $semuaAntrian = Pendaftaran::where('dokter_id', $antrian->dokter_id)
+            ->where('tanggal_kunjungan', $antrian->tanggal_kunjungan)
+            ->whereIn('status_antrian', ['menunggu', 'dipanggil'])
+            ->orderBy('nomor_antrian')
+            ->get();
+
+        // Hitung ulang estimasi semua antrian mulai dari jam_mulai_baru
+        $jamMulai = \Carbon\Carbon::createFromFormat('H:i', $request->jam_mulai_baru);
+
+        foreach ($semuaAntrian as $index => $a) {
+            $estimasiBaru = $jamMulai->copy()->addMinutes($index * 15)->format('H:i');
+            Pendaftaran::where('id', $a->id)->update(['estimasi_jam' => $estimasiBaru]);
+        }
+
+        return redirect('/dokter/antrian?tanggal=' . $antrian->tanggal_kunjungan)
+            ->with('success', 'Estimasi waktu semua antrian berhasil diperbarui!');
     }
 }

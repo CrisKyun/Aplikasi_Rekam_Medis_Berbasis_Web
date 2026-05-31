@@ -10,27 +10,43 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Akun Staff/Dokter
+        // Superadmin
         DB::table('users')->insert([
             'nik'                => '0000000000000001',
-            'no_kk'             => '0000000000000001',
-            'username'          => 'Staff Klinik',
-            'password'          => Hash::make('staff123'),
-            'email'             => 'staff@klinik.com',
+            'no_kk'             => null,
+            'username'          => 'superadmin',
+            'nama_lengkap'      => 'Super Admin',
+            'password'          => Hash::make('admin123'),
+            'email'             => 'admin@klinik.com',
             'role_id'           => 1,
-            'status'            => 'aktif', // ← staff selalu aktif
+            'status'            => 'aktif',
             'tanggal_registrasi' => now(),
         ]);
 
-        // Akun Pasien contoh
+        // Staff contoh
+        DB::table('users')->insert([
+            'nik'                => '0000000000000002',
+            'no_kk'             => null,
+            'username'          => 'staff1',
+            'nama_lengkap'      => 'dr. Siti Rahayu',
+            'password'          => Hash::make('staff123'),
+            'email'             => 'siti@klinik.com',
+            'role_id'           => 2,
+            'status'            => 'aktif',
+            'tanggal_registrasi' => now(),
+        ]);
+
+        // Pasien contoh
         DB::table('users')->insert([
             'nik'                => '3510123456789001',
             'no_kk'             => '3510123456789000',
             'username'          => 'Budi Santoso',
+            'nama_lengkap'      => 'Budi Santoso',
             'password'          => Hash::make('budi123'),
             'email'             => 'budi@email.com',
-            'role_id'           => 2,
-            'status'            => 'aktif', // ← contoh sudah aktif
+            'role_id'           => 3,
+            'status'            => 'aktif',
+            'expired_at'        => now()->addDays(7),
             'tanggal_registrasi' => now(),
         ]);
     }

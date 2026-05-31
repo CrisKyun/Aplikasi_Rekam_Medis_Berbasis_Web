@@ -15,6 +15,8 @@ class RekamMedis extends Model
         'berat_badan',
         'tinggi_badan',
         'suhu_tubuh',
+        'kode_icd10',
+        'nama_icd10',
         'diagnosis',
         'resep_obat',
         'catatan_dokter',

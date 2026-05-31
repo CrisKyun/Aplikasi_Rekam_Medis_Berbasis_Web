@@ -10,6 +10,7 @@ use App\Http\Controllers\DokterAuthController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\AntriController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\SuperadminController;
 
 // ================================
 // PUBLIK (tanpa login)
@@ -66,6 +67,8 @@ Route::post('/dokter/login', [DokterAuthController::class, 'login']);
 
 Route::middleware('auth.dokter')->group(function () {
     Route::post('/dokter/logout', [DokterAuthController::class, 'logout'])->name('dokter.logout');
+    Route::get('/dokter/antrian/{id}/edit-estimasi', [DokterController::class, 'antrianEditEstimasi'])->name('dokter.antrian.edit-estimasi');
+    Route::patch('/dokter/antrian/{id}/edit-estimasi', [DokterController::class, 'antrianUpdateEstimasi'])->name('dokter.antrian.update-estimasi');
 
     // Dashboard
     Route::get('/dokter/dashboard', [DokterController::class, 'dashboard'])->name('dokter.dashboard');
@@ -101,4 +104,46 @@ Route::middleware('auth.dokter')->group(function () {
     Route::patch('/dokter/antrian/{id}/panggil', [DokterController::class, 'antrianPanggil'])->name('dokter.antrian.panggil');
     Route::patch('/dokter/antrian/{id}/selesai', [DokterController::class, 'antrianSelesai'])->name('dokter.antrian.selesai');
     Route::patch('/dokter/antrian/{id}/batal', [DokterController::class, 'antrianBatal'])->name('dokter.antrian.batal');
+
+    // Badge count 
+    Route::get('/dokter/badge-count', function () {
+        $antrian = \App\Models\Pendaftaran::where('tanggal_kunjungan', \Carbon\Carbon::today())
+            ->where('status_antrian', 'menunggu')
+            ->count();
+        return response()->json(['antrian' => $antrian]);
+    })->middleware('auth.dokter');
+
+    // Pencarian ICD-10
+    Route::get('/dokter/icd10/cari', function (\Illuminate\Http\Request $request) {
+        $keyword = $request->q;
+        $hasil   = \App\Models\Icd10::where('kode', 'like', "%{$keyword}%")
+            ->orWhere('nama', 'like', "%{$keyword}%")
+            ->limit(10)
+            ->get(['kode', 'nama', 'kategori']);
+        return response()->json($hasil);
+    })->middleware('auth.dokter')->name('dokter.icd10.cari');
+
+    // ================================
+    // SUPERADMIN
+    // ================================
+    Route::middleware(['auth.dokter', 'auth.superadmin'])->prefix('superadmin')->group(function () {
+        // Kelola Staff
+        Route::get('/staff', [SuperadminController::class, 'staffIndex'])->name('superadmin.staff.index');
+        Route::get('/staff/tambah', [SuperadminController::class, 'staffCreate'])->name('superadmin.staff.create');
+        Route::post('/staff/tambah', [SuperadminController::class, 'staffStore'])->name('superadmin.staff.store');
+        Route::get('/staff/{id}/edit', [SuperadminController::class, 'staffEdit'])->name('superadmin.staff.edit');
+        Route::put('/staff/{id}/edit', [SuperadminController::class, 'staffUpdate'])->name('superadmin.staff.update');
+        Route::delete('/staff/{id}/hapus', [SuperadminController::class, 'staffDestroy'])->name('superadmin.staff.destroy');
+
+        // History Aktivitas
+        Route::get('/history', [SuperadminController::class, 'historyIndex'])->name('superadmin.history.index');
+    });
+
+    // History diri sendiri (staff)
+    Route::middleware('auth.dokter')->get('/dokter/history', function () {
+        $history = \App\Models\ActivityLog::where('user_id', session('user_id'))
+            ->latest()
+            ->paginate(20);
+        return view('dokter.history', compact('history'));
+    })->name('dokter.history');
 });

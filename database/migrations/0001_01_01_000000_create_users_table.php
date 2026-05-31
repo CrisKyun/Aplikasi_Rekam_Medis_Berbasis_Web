@@ -63,12 +63,14 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->char('nik', 16)->unique();
-            $table->char('no_kk', 16);
+            $table->char('no_kk', 16)->nullable(); // ← BARU untuk staff
             $table->string('username', 50);
+            $table->string('nama_lengkap', 100)->nullable(); // ← BARU untuk staff
             $table->string('password', 255);
             $table->string('email', 50)->nullable();
             $table->unsignedBigInteger('role_id')->default(3);
-            $table->enum('status', ['aktif', 'nonaktif'])->default('nonaktif');
+            $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
+            $table->timestamp('expired_at')->nullable();
             $table->datetime('tanggal_registrasi')->useCurrent();
             $table->rememberToken();
             $table->timestamps();

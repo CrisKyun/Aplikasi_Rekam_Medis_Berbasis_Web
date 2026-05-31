@@ -14,6 +14,7 @@ class Pendaftaran extends Model
         'tanggal_kunjungan',
         'nomor_antrian',
         'estimasi_jam',
+        'keluhan_awal',
         'status_antrian',
         'keterangan_pembatalan',
     ];

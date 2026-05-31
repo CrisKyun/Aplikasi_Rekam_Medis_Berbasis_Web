@@ -19,6 +19,9 @@
     </a>
 </div>
 
+{{-- Grafik Tanda Vital --}}
+@include('components.grafik-vital')
+
 <div class="row g-4">
 
     {{-- Data Diri --}}
@@ -88,13 +91,7 @@
                         <p class="mb-1 small">
                             <strong>Keluhan:</strong> {{ $rm->keluhan }}
                         </p>
-                        <p class="mb-1 small">
-                            <strong>Diagnosis:</strong> {{ $rm->diagnosis }}
-                        </p>
-                        @if($rm->resep_obat)
-                        <p class="mb-1 small">
-                            <strong>Resep:</strong> {{ $rm->resep_obat }}
-                        </p>
+                        @if($rm->catatan_dokter)
                         <p class="mb-0 small">
                             <strong>Catatan:</strong> {{ $rm->catatan_dokter }}
                         </p>

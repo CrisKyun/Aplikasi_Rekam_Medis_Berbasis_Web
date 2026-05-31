@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('tanggal_kunjungan');
             $table->integer('nomor_antrian');
             $table->time('estimasi_jam');
+            $table->text('keluhan_awal')->nullable();
             $table->enum('status_antrian', [
                 'menunggu',
                 'dipanggil',

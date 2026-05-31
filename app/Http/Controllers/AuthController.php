@@ -109,6 +109,8 @@ class AuthController extends Controller
             'password'          => Hash::make($request->password),
             'email'             => $request->email,
             'role_id'           => 2,
+            'status'            => 'aktif',
+            'expired_at'        => now()->addDays(7),
             'tanggal_registrasi' => now(),
         ]);
 

@@ -66,14 +66,57 @@
             </a>
 
             <a href="/dokter/antrian"
-                class="{{ request()->is('dokter/antrian*') ? 'active' : '' }}">
+                class="{{ request()->is('dokter/antrian*') ? 'active' : '' }}"
+                style="position: relative;">
                 <i class="bi bi-ticket-perforated-fill me-2"></i>Antrian
+
+                {{-- Badge notifikasi --}}
+                @if(isset($badgeAntrian) && $badgeAntrian > 0)
+                <span id="badgeAntrian" style="
+            position: absolute;
+            top: 6px;
+            right: 10px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            min-width: 20px;
+            height: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        ">{{ $badgeAntrian > 99 ? '99+' : $badgeAntrian }}</span>
+                @endif
             </a>
 
             <a href="/dokter/klinik"
                 class="{{ request()->is('dokter/klinik*') ? 'active' : '' }}">
                 <i class="bi bi-gear-fill me-2"></i>Info Klinik
             </a>
+
+            {{-- Menu History (semua staff) --}}
+            <a href="/dokter/history"
+                class="{{ request()->is('dokter/history') ? 'active' : '' }}">
+                <i class="bi bi-clock-history me-2"></i>History Saya
+            </a>
+
+            {{-- Menu Superadmin Only --}}
+            @if(session('user_role') == 1)
+            <hr class="border-white opacity-25">
+            <small class="text-white-50 px-3" style="font-size:0.7rem;">SUPERADMIN</small>
+
+            <a href="/superadmin/staff"
+                class="{{ request()->is('superadmin/staff*') ? 'active' : '' }}">
+                <i class="bi bi-people-fill me-2"></i>Kelola Staff
+            </a>
+
+            <a href="/superadmin/history"
+                class="{{ request()->is('superadmin/history*') ? 'active' : '' }}">
+                <i class="bi bi-journal-text me-2"></i>History Semua Staff
+            </a>
+            @endif
 
             <hr class="border-white opacity-25">
 
@@ -118,6 +161,27 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Refresh badge setiap 30 detik tanpa reload halaman
+        setInterval(function() {
+            fetch('/dokter/badge-count')
+                .then(res => res.json())
+                .then(data => {
+                    const badge = document.getElementById('badgeAntrian');
+                    if (data.antrian > 0) {
+                        if (!badge) {
+                            // buat badge baru kalau belum ada
+                            location.reload();
+                        } else {
+                            badge.textContent = data.antrian > 99 ? '99+' : data.antrian;
+                            badge.style.display = 'flex';
+                        }
+                    } else if (badge) {
+                        badge.style.display = 'none';
+                    }
+                });
+        }, 30000); // 30 detik
+    </script>
 </body>
 
 </html>

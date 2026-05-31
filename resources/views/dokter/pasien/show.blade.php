@@ -10,6 +10,9 @@
     </a>
 </div>
 
+{{-- Grafik Tanda Vital --}}
+@include('components.grafik-vital')
+
 <div class="row g-4">
 
     {{-- Data Diri --}}
@@ -71,6 +74,19 @@
                             <span class="badge {{ $userPasien->status === 'aktif' ? 'bg-success' : 'bg-danger' }}">
                                 {{ ucfirst($userPasien->status) }}
                             </span>
+                            @if($userPasien->expired_at)
+                            <br>
+                            <small class="text-warning">
+                                <i class="bi bi-clock me-1"></i>
+                                Expired: {{ \Carbon\Carbon::parse($userPasien->expired_at)->format('d M Y') }}
+                                ({{ \Carbon\Carbon::parse($userPasien->expired_at)->diffForHumans() }})
+                            </small>
+                            @else
+                            <br>
+                            <small class="text-success">
+                                <i class="bi bi-infinity me-1"></i>Permanen
+                            </small>
+                            @endif
                             @endif
                         </td>
                     </tr>
@@ -144,6 +160,18 @@
                                     <strong>Diagnosis:</strong> {{ $rm->diagnosis }}
                                 </p>
                             </div>
+                            @if($rm->kode_icd10)
+                            <p class="mb-1 small">
+                                <strong>Diagnosis ICD-10:</strong>
+                                <span class="badge bg-primary">{{ $rm->kode_icd10 }}</span>
+                                {{ $rm->nama_icd10 }}
+                            </p>
+                            @endif
+                            @if($rm->diagnosis)
+                            <p class="mb-0 small text-muted">
+                                <strong>Catatan:</strong> {{ $rm->diagnosis }}
+                            </p>
+                            @endif
                             <div class="d-flex gap-1">
                                 <a href="/dokter/rekam-medis/{{ $rm->id }}/edit"
                                     class="btn btn-warning btn-sm">

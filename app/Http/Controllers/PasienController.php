@@ -12,10 +12,51 @@ class PasienController extends Controller
     {
         $pasien = Pasien::where('id', $id)
             ->where('user_id', session('user_id'))
-            ->with('rekamMedis')
+            ->with(['rekamMedis' => function ($q) {
+                $q->orderBy('tanggal_periksa', 'asc');
+            }])
             ->firstOrFail();
 
-        return view('pasien.show', compact('pasien'));
+        $grafikData = $this->buildGrafikData($pasien->rekamMedis);
+
+        return view('pasien.show', compact('pasien', 'grafikData'));
+    }
+
+    private function buildGrafikData($rekamMedis)
+    {
+        $labels        = [];
+        $beratBadan    = [];
+        $suhuTubuh     = [];
+        $sistolik      = [];
+        $diastolik     = [];
+        $bmi           = [];
+
+        foreach ($rekamMedis as $rm) {
+            $labels[] = \Carbon\Carbon::parse($rm->tanggal_periksa)->format('d M Y');
+
+            $beratBadan[] = $rm->berat_badan ?? null;
+            $suhuTubuh[]  = $rm->suhu_tubuh ?? null;
+
+            // Parse tekanan darah (format: 120/80)
+            if ($rm->tekanan_darah && str_contains($rm->tekanan_darah, '/')) {
+                [$sis, $dia]  = explode('/', $rm->tekanan_darah);
+                $sistolik[]   = (int) trim($sis);
+                $diastolik[]  = (int) trim($dia);
+            } else {
+                $sistolik[]  = null;
+                $diastolik[] = null;
+            }
+
+            // Hitung BMI
+            if ($rm->berat_badan && $rm->tinggi_badan) {
+                $tinggim = $rm->tinggi_badan / 100;
+                $bmi[]   = round($rm->berat_badan / ($tinggim * $tinggim), 1);
+            } else {
+                $bmi[] = null;
+            }
+        }
+
+        return compact('labels', 'beratBadan', 'suhuTubuh', 'sistolik', 'diastolik', 'bmi');
     }
 
     // Form tambah anggota keluarga

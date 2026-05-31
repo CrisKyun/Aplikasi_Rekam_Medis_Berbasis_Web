@@ -10,30 +10,40 @@ use Carbon\Carbon;
 class NonaktifkanPasienIseng extends Command
 {
     protected $signature   = 'pasien:nonaktifkan-iseng';
-    protected $description = 'Nonaktifkan akun pasien yang belum pernah berobat selama 1 bulan';
+    protected $description = 'Nonaktifkan akun pasien yang expired dan belum pernah berobat';
 
     public function handle()
     {
+        // Ambil user pasien yang aktif & sudah expired
         $users = User::where('role_id', 2)
             ->where('status', 'aktif')
-            ->where('tanggal_registrasi', '<=', Carbon::now()->subMonth())
+            ->whereNotNull('expired_at')
+            ->where('expired_at', '<=', Carbon::now())
             ->get();
 
-        $count = 0;
+        $nonaktif = 0;
+        $permanen  = 0;
 
         foreach ($users as $user) {
-            // Cek apakah punya rekam medis
             $punyaRekamMedis = Pasien::where('user_id', $user->id)
                 ->whereHas('rekamMedis')
                 ->exists();
 
-            if (!$punyaRekamMedis) {
-                // Pakai Eloquent update langsung
-                User::where('id', $user->id)->update(['status' => 'nonaktif']);
-                $count++;
+            if ($punyaRekamMedis) {
+                // Sudah pernah berobat → jadikan permanen aktif
+                User::where('id', $user->id)->update([
+                    'expired_at' => null,
+                ]);
+                $permanen++;
+            } else {
+                // Belum pernah berobat → nonaktifkan
+                User::where('id', $user->id)->update([
+                    'status' => 'nonaktif',
+                ]);
+                $nonaktif++;
             }
         }
 
-        $this->info("Selesai! {$count} akun pasien dinonaktifkan.");
+        $this->info("Selesai! {$nonaktif} akun dinonaktifkan, {$permanen} akun dijadikan permanen aktif.");
     }
 }

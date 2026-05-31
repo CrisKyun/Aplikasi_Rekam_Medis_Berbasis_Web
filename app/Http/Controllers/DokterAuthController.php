@@ -21,15 +21,11 @@ class DokterAuthController extends Controller
         $request->validate([
             'email'    => 'required|email',
             'password' => 'required|min:6',
-        ], [
-            'email.required'    => 'Email wajib diisi.',
-            'email.email'       => 'Format email tidak valid.',
-            'password.required' => 'Password wajib diisi.',
-            'password.min'      => 'Password minimal 6 karakter.',
         ]);
 
+        // Cari user dengan role superadmin atau staff
         $user = User::where('email', $request->email)
-            ->where('role_id', 1)
+            ->whereIn('role_id', [1, 2])
             ->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
@@ -39,16 +35,26 @@ class DokterAuthController extends Controller
         }
 
         session([
-            'user_id'   => $user->id,
-            'user_nama' => $user->username,
-            'user_role' => $user->role_id,
+            'user_id'        => $user->id,
+            'user_nama'      => $user->nama_lengkap ?? $user->username,
+            'user_role'      => $user->role_id,
+            'user_role_nama' => $user->role_id == 1 ? 'Superadmin' : 'Staff',
         ]);
+
+        // Catat aktivitas login
+        \App\Helpers\ActivityHelper::log(
+            'login',
+            'auth',
+            ($user->role_id == 1 ? 'Superadmin' : 'Staff') . ' login ke sistem'
+        );
 
         return redirect('/dokter/dashboard');
     }
 
     public function logout()
     {
+        \App\Helpers\ActivityHelper::log('logout', 'auth', 'Logout dari sistem');
+
         session()->flush();
         return redirect('/dokter/login')->with('success', 'Berhasil logout.');
     }

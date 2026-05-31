@@ -40,6 +40,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             DokterSeeder::class,
             InfoKlinikSeeder::class,
+            Icd10Seeder::class,
         ]);
     }
 }

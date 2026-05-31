@@ -54,13 +54,15 @@ class AntriController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'pasien_id'        => 'required|exists:pasien,id',
-            'dokter_id'        => 'required|exists:dokter,id',
+            'pasien_id'         => 'required|exists:pasien,id',
+            'dokter_id'         => 'required|exists:dokter,id',
             'tanggal_kunjungan' => 'required|date',
+            'keluhan_awal'      => 'required|string|max:500',
         ], [
             'pasien_id.required'         => 'Pilih anggota keluarga.',
             'dokter_id.required'         => 'Pilih dokter.',
             'tanggal_kunjungan.required' => 'Pilih tanggal kunjungan.',
+            'keluhan_awal.required'      => 'Keluhan wajib diisi.',
         ]);
 
         // Pastikan pasien milik user yang login
@@ -123,6 +125,7 @@ class AntriController extends Controller
             'tanggal_kunjungan' => $request->tanggal_kunjungan,
             'nomor_antrian'     => $nomorAntrian,
             'estimasi_jam'      => $estimasiJam,
+            'keluhan_awal'      => $request->keluhan_awal, 
             'status_antrian'    => 'menunggu',
         ]);
 

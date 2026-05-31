@@ -72,6 +72,23 @@
                         @error('tanggal_kunjungan')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Keluhan Awal <span class="text-danger">*</span>
+                        </label>
+                        <textarea name="keluhan_awal" rows="4"
+                            class="form-control @error('keluhan_awal') is-invalid @enderror"
+                            placeholder="Ceritakan keluhan Anda secara singkat...
+Contoh: Demam 2 hari, sakit kepala, dan batuk kering.">{{ old('keluhan_awal') }}</textarea>
+                        @error('keluhan_awal')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-text">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Keluhan ini akan dilihat dokter sebelum Anda dipanggil.
+                        </div>
+                    </div>
+
                     <div class="alert alert-info small">
                         <i class="bi bi-info-circle me-2"></i>
                         Estimasi waktu akan dihitung otomatis. Setiap pasien mendapat waktu <strong>15 menit</strong>.

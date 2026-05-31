@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth.session' => \App\Http\Middleware\AuthMiddleware::class,
             'auth.dokter'  => \App\Http\Middleware\DokterMiddleware::class,
+            'auth.superadmin' => \App\Http\Middleware\SuperadminMiddleware::class,
 
         ]);
     })
