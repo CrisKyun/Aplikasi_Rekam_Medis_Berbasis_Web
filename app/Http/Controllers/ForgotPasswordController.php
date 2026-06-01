@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Models\User;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class ForgotPasswordController extends Controller
 {
@@ -17,83 +18,115 @@ class ForgotPasswordController extends Controller
     }
 
     public function sendResetLink(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email'
-        ]);
+{
+    $request->validate([
+        'email' => 'required|email'
+    ]);
 
-        $user = User::where('email', $request->email)->first();
+    $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
-            return back()->with('error', 'Email tidak ditemukan.');
-        }
+    if (!$user) {
+        return back()->with('error', 'Email tidak ditemukan.');
+    }
 
-        $token = Str::random(64);
+    $token = Str::random(64);
 
-        DB::table('password_reset_tokens')->updateOrInsert(
-            ['email' => $request->email],
-            [
-                'token' => $token,
-                'created_at' => now()
-            ]
+    DB::table('password_reset_tokens')->updateOrInsert(
+        ['email' => $request->email],
+        [
+            'token' => $token,
+            'created_at' => now()
+        ]
+    );
+
+    $link = url('/reset-password/' . $token);
+
+    try {
+
+        $mail = new PHPMailer(true);
+
+        // SMTP Gmail
+        $mail->isSMTP();
+        $mail->Host       = env('MAIL_HOST');
+        $mail->SMTPAuth   = true;
+        $mail->Username   = env('MAIL_USERNAME');
+        $mail->Password   = env('MAIL_PASSWORD');
+        $mail->Port       = env('MAIL_PORT');
+
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+
+        // Pengirim
+        $mail->setFrom(
+            env('MAIL_USERNAME'),
+            env('MAIL_FROM_NAME')
         );
 
-        $link = url('/reset-password/' . $token);
+        // Penerima
+        $mail->addAddress($request->email);
 
-        Mail::html("
-    <div style='font-family: Arial, sans-serif; padding:20px;'>
+        // Format Email
+        $mail->isHTML(true);
 
-        <h2 style='color:#0d6efd;'>
-            Reset Password
-        </h2>
+        $mail->Subject = 'Reset Password Akun';
 
-        <p>
-            Halo,
-        </p>
+        $mail->Body = "
+        <div style='font-family:Arial,sans-serif;padding:20px;'>
 
-        <p>
-            Kami menerima permintaan reset password untuk akun Anda.
-        </p>
+            <h2 style='color:#0d6efd'>
+                Reset Password
+            </h2>
 
-        <p style='margin:30px 0;'>
-            <a href='{$link}'
-            style='
+            <p>Halo,</p>
+
+            <p>
+                Kami menerima permintaan reset password untuk akun Anda.
+            </p>
+
+            <p style='margin:30px 0;'>
+                <a href='{$link}'
+                   style='
                     background:#0d6efd;
                     color:white;
                     padding:12px 24px;
-                    text-decoration:none;
                     border-radius:8px;
+                    text-decoration:none;
                     display:inline-block;
                     font-weight:bold;
-            '>
-                Reset Password
-            </a>
-        </p>
+                   '>
+                    Reset Password
+                </a>
+            </p>
 
-        <p style='color:#6c757d; font-size:14px;'>
-            Jika Anda tidak meminta reset password,
-            abaikan email ini.
-        </p>
+            <p style='color:#6c757d;font-size:14px;'>
+                Jika Anda tidak meminta reset password,
+                abaikan email ini.
+            </p>
 
-        <hr>
+            <hr>
 
-        <p style='font-size:13px; color:#999;'>
-            Praktik Mandiri dr. Luria Widijana Haribawanti.
-        </p>
+            <p style='font-size:13px;color:#999;'>
+                Praktik Mandiri dr. Luria Widijana Haribawanti
+            </p>
 
-    </div>
-", function ($message) use ($request) {
+        </div>
+        ";
 
-    $message->to($request->email)
-            ->subject('Reset Password Akun');
-
-});
+        $mail->send();
 
         return back()->with(
             'success',
             'Link reset password berhasil dikirim ke email.'
         );
+
+    } catch (Exception $e) {
+
+        return back()->with(
+            'error',
+            'Gagal mengirim email: ' . $mail->ErrorInfo
+        );
+
     }
+}
 
     public function showResetForm($token)
     {
