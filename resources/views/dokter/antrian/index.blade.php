@@ -39,30 +39,55 @@
     $selesai = $antrian->where('status_antrian', 'selesai')->count();
     $batal = $antrian->where('status_antrian', 'batal')->count();
     @endphp
-    <div class="col-md-3">
-        <div class="card border-0 bg-warning bg-opacity-10 text-center p-3">
-            <h3 class="fw-bold text-warning">{{ $menunggu }}</h3>
-            <small class="text-muted">Menunggu</small>
+
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon yellow">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div>
+                <p class="stat-label mb-1">Menunggu</p>
+                <p class="stat-value">{{ $menunggu }}</p>
+            </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card border-0 bg-primary bg-opacity-10 text-center p-3">
-            <h3 class="fw-bold text-primary">{{ $dipanggil }}</h3>
-            <small class="text-muted">Dipanggil</small>
+
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon blue">
+                <i class="bi bi-megaphone-fill"></i>
+            </div>
+            <div>
+                <p class="stat-label mb-1">Dipanggil</p>
+                <p class="stat-value">{{ $dipanggil }}</p>
+            </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card border-0 bg-success bg-opacity-10 text-center p-3">
-            <h3 class="fw-bold text-success">{{ $selesai }}</h3>
-            <small class="text-muted">Selesai</small>
+
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon green">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <div>
+                <p class="stat-label mb-1">Selesai</p>
+                <p class="stat-value">{{ $selesai }}</p>
+            </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card border-0 bg-danger bg-opacity-10 text-center p-3">
-            <h3 class="fw-bold text-danger">{{ $batal }}</h3>
-            <small class="text-muted">Batal</small>
+
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon red">
+                <i class="bi bi-x-circle-fill"></i>
+            </div>
+            <div>
+                <p class="stat-label mb-1">Batal</p>
+                <p class="stat-value">{{ $batal }}</p>
+            </div>
         </div>
     </div>
+
 </div>
 
 {{-- Tabel Antrian --}}
