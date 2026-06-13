@@ -21,7 +21,9 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/lupa-password', [ForgotPasswordController::class, 'showForgotForm'])->name('password.request');
-Route::post('/lupa-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
+Route::post('/lupa-password', [ForgotPasswordController::class, 'sendResetLink'])
+    ->name('password.email')
+    ->middleware('throttle:5,10');
 Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 // ================================

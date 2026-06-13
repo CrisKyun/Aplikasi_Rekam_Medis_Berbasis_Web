@@ -10,6 +10,8 @@ use App\Models\User;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+
 
 class ForgotPasswordController extends Controller
 {
@@ -130,7 +132,7 @@ class ForgotPasswordController extends Controller
     public function resetPassword(Request $request)
     {
         $request->validate([
-            'token' => 'required',
+            'token'    => 'required',
             'password' => 'required|min:6|confirmed'
         ]);
 
@@ -139,19 +141,27 @@ class ForgotPasswordController extends Controller
             ->first();
 
         if (!$data) {
-            return redirect('/login')
-                ->with('error', 'Token tidak valid.');
+            return redirect('/login')->with('error', 'Token tidak valid.');
+        }
+
+        // cek expiry di sini juga (sama seperti showResetForm)
+        if (\Carbon\Carbon::parse($data->created_at)->addMinutes(60)->isPast()) {
+            DB::table('password_reset_tokens')->where('token', $request->token)->delete();
+            return redirect('/login')->with('error', 'Token sudah kadaluarsa.');
         }
 
         $user = User::where('email', $data->email)->first();
+
+        // Guard jika email di token tidak cocok dengan user manapun
+        if (!$user) {
+            return redirect('/login')->with('error', 'User tidak ditemukan.');
+        }
+
         $user->password = Hash::make($request->password);
         $user->save();
 
-        DB::table('password_reset_tokens')
-            ->where('email', $data->email)
-            ->delete();
+        DB::table('password_reset_tokens')->where('email', $data->email)->delete();
 
-        return redirect('/login')
-            ->with('success', 'Password berhasil direset.');
+        return redirect('/login')->with('success', 'Password berhasil direset.');
     }
 }
