@@ -38,8 +38,8 @@ class UserSeeder extends Seeder
 
         // Pasien contoh
         DB::table('users')->insert([
-            'nik'                => '3510123456789001',
-            'no_kk'             => '3510123456789000',
+            'nik'                => '1111111111111111',
+            'no_kk'             => '1111111111111111',
             'username'          => 'Budi Santoso',
             'nama_lengkap'      => 'Budi Santoso',
             'password'          => Hash::make('budi123'),
