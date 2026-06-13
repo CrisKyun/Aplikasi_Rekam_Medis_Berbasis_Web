@@ -56,8 +56,9 @@
         </div>
     </nav>
 
-    {{-- Main --}}
-    <main class="container py-4">
+
+    {{-- Main Content --}}
+    <main class="container py-4" style="flex:1;">
 
         @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show mb-3">
@@ -73,11 +74,12 @@
         </div>
         @endif
 
+
         @yield('content')
     </main>
     {{-- Footer --}}
     @include('components.footer')
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

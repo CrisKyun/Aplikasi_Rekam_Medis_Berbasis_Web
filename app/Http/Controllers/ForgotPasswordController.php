@@ -84,10 +84,9 @@ class ForgotPasswordController extends Controller
     </div>
 ", function ($message) use ($request) {
 
-    $message->to($request->email)
-            ->subject('Reset Password Akun');
-
-});
+            $message->to($request->email)
+                ->subject('Reset Password Akun');
+        });
 
         return back()->with(
             'success',
