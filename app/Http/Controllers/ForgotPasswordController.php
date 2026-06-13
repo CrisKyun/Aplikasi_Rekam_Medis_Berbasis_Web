@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use Illuminate\Support\Facades\Log;
 
 class ForgotPasswordController extends Controller
 {
@@ -98,7 +99,7 @@ class ForgotPasswordController extends Controller
             $errorInfo = isset($mail) ? $mail->ErrorInfo : $e->getMessage();
 
             // Log error untuk debugging (tidak ditampilkan ke user)
-            \Log::error('Gagal kirim email reset password: ' . $errorInfo);
+            Log::error('Gagal kirim email reset password: ' . $errorInfo);
 
             return back()->with(
                 'error',
