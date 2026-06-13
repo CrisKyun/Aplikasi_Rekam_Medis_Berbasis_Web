@@ -12,12 +12,12 @@ class UserSeeder extends Seeder
     {
         // Superadmin
         DB::table('users')->insert([
-            'nik'                => '0000000000000001',
+            'nik'                => '3510160202050001',
             'no_kk'             => null,
             'username'          => 'superadmin',
             'nama_lengkap'      => 'Super Admin',
-            'password'          => Hash::make('admin123'),
-            'email'             => 'admin@klinik.com',
+            'password'          => Hash::make('Mupp!qy0ech4y'),
+            'email'             => 'halofajar02@gmail.com',
             'role_id'           => 1,
             'status'            => 'aktif',
             'tanggal_registrasi' => now(),
@@ -25,12 +25,12 @@ class UserSeeder extends Seeder
 
         // Staff contoh
         DB::table('users')->insert([
-            'nik'                => '0000000000000002',
+            'nik'                => '3510164611690003',
             'no_kk'             => null,
-            'username'          => 'staff1',
-            'nama_lengkap'      => 'dr. Siti Rahayu',
-            'password'          => Hash::make('staff123'),
-            'email'             => 'siti@klinik.com',
+            'username'          => 'dokterluria',
+            'nama_lengkap'      => 'dr. Luria Widijana Haribawanti',
+            'password'          => Hash::make('luriadokter0606@'),
+            'email'             => 'widijanaluria@gmail.com',
             'role_id'           => 2,
             'status'            => 'aktif',
             'tanggal_registrasi' => now(),

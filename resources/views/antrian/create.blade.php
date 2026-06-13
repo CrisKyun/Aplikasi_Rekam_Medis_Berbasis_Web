@@ -16,6 +16,34 @@
                 <i class="bi bi-ticket-perforated-fill me-2"></i>Daftar Antrian Online
             </div>
             <div class="card-body">
+
+                @if($klinikTutup)
+                {{-- Klinik Tutup --}}
+                <div class="text-center py-4">
+                    <i class="bi bi-door-closed" style="font-size:3rem;color:#94a3b8;"></i>
+                    <h5 class="mt-3 fw-semibold">Klinik Sedang Tutup</h5>
+                    <p class="text-muted">{{ $pesanTutup }}</p>
+                    <a href="/" class="btn btn-outline-primary btn-sm mt-2">
+                        <i class="bi bi-arrow-left me-1"></i>Kembali ke Beranda
+                    </a>
+                </div>
+
+                @elseif(count($tanggalTersedia) === 0)
+                {{-- Tidak ada jadwal --}}
+                <div class="text-center py-4">
+                    <i class="bi bi-calendar-x" style="font-size:3rem;color:#94a3b8;"></i>
+                    <h5 class="mt-3 fw-semibold">Tidak Ada Jadwal Tersedia</h5>
+                    <p class="text-muted">
+                        Tidak ada dokter yang praktik dalam 3 hari ke depan.<br>
+                        Silakan hubungi klinik untuk informasi lebih lanjut.
+                    </p>
+                    <a href="/" class="btn btn-outline-primary btn-sm mt-2">
+                        <i class="bi bi-arrow-left me-1"></i>Kembali ke Beranda
+                    </a>
+                </div>
+
+                @else
+                {{-- Form Antrian --}}
                 <form action="/antrian/daftar" method="POST">
                     @csrf
 
@@ -23,15 +51,19 @@
                         <label class="form-label fw-semibold">
                             Untuk Siapa? <span class="text-danger">*</span>
                         </label>
-                        <select name="pasien_id" class="form-select @error('pasien_id') is-invalid @enderror">
+                        <select name="pasien_id"
+                            class="form-select @error('pasien_id') is-invalid @enderror">
                             <option value="">-- Pilih Anggota Keluarga --</option>
                             @foreach($anggotaKeluarga as $p)
-                            <option value="{{ $p->id }}" {{ old('pasien_id') == $p->id ? 'selected' : '' }}>
+                            <option value="{{ $p->id }}"
+                                {{ old('pasien_id') == $p->id ? 'selected' : '' }}>
                                 {{ $p->nama_lengkap }} ({{ $p->status_hubungan }})
                             </option>
                             @endforeach
                         </select>
-                        @error('pasien_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        @error('pasien_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="mb-3">
@@ -50,7 +82,9 @@
                             </option>
                             @endforeach
                         </select>
-                        @error('dokter_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        @error('dokter_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                         <div id="jadwalInfo" class="form-text text-muted mt-1"></div>
                     </div>
 
@@ -69,7 +103,9 @@
                             </option>
                             @endforeach
                         </select>
-                        @error('tanggal_kunjungan')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        @error('tanggal_kunjungan')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="mb-3">
@@ -78,8 +114,7 @@
                         </label>
                         <textarea name="keluhan_awal" rows="4"
                             class="form-control @error('keluhan_awal') is-invalid @enderror"
-                            placeholder="Ceritakan keluhan Anda secara singkat...
-Contoh: Demam 2 hari, sakit kepala, dan batuk kering.">{{ old('keluhan_awal') }}</textarea>
+                            placeholder="Ceritakan keluhan Anda secara singkat...">{{ old('keluhan_awal') }}</textarea>
                         @error('keluhan_awal')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -91,7 +126,8 @@ Contoh: Demam 2 hari, sakit kepala, dan batuk kering.">{{ old('keluhan_awal') }}
 
                     <div class="alert alert-info small">
                         <i class="bi bi-info-circle me-2"></i>
-                        Estimasi waktu akan dihitung otomatis. Setiap pasien mendapat waktu <strong>15 menit</strong>.
+                        Estimasi waktu dihitung otomatis. Setiap pasien mendapat waktu
+                        <strong>15 menit</strong>.
                     </div>
 
                     <hr>
@@ -103,6 +139,8 @@ Contoh: Demam 2 hari, sakit kepala, dan batuk kering.">{{ old('keluhan_awal') }}
                     </div>
 
                 </form>
+                @endif
+
             </div>
         </div>
 
@@ -117,7 +155,8 @@ Contoh: Demam 2 hari, sakit kepala, dan batuk kering.">{{ old('keluhan_awal') }}
         const info = document.getElementById('jadwalInfo');
 
         if (jadwal) {
-            info.innerHTML = '<i class="bi bi-calendar-check me-1"></i>Jadwal praktik: <strong>' + jadwal + '</strong>';
+            info.innerHTML = '<i class="bi bi-calendar-check me-1"></i>Jadwal praktik: <strong>' +
+                jadwal + '</strong>';
         } else {
             info.innerHTML = '';
         }

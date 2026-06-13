@@ -10,6 +10,17 @@
     </div>
     <div class="card-body">
         <form action="/dokter/klinik" method="POST">
+            @if($errors->any())
+            <div class="alert alert-danger mb-3">
+                <i class="bi bi-exclamation-circle me-2"></i>
+                <strong>Terdapat kesalahan:</strong>
+                <ul class="mb-0 mt-1">
+                    @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
             @csrf
             @method('PUT')
 

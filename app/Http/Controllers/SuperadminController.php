@@ -128,21 +128,4 @@ class SuperadminController extends Controller
 
         return redirect('/superadmin/staff')->with('success', 'Akun staff berhasil dihapus!');
     }
-
-    // History semua staff (superadmin)
-    public function historyIndex(Request $request)
-    {
-        $userId = $request->user_id;
-        $modul  = $request->modul;
-
-        $history = ActivityLog::with('user')
-            ->when($userId, fn($q) => $q->where('user_id', $userId))
-            ->when($modul, fn($q) => $q->where('modul', $modul))
-            ->latest()
-            ->paginate(20);
-
-        $staff = User::whereIn('role_id', [1, 2])->get();
-
-        return view('superadmin.history.index', compact('history', 'staff', 'userId', 'modul'));
-    }
 }

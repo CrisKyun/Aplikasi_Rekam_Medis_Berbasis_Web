@@ -10,16 +10,18 @@ class InfoKlinikSeeder extends Seeder
     public function run(): void
     {
         DB::table('info_klinik')->insert([
-            'nama_klinik'      => 'Klinik Sehat Bersama',
-            'alamat'           => 'Jl. Kesehatan No. 1, Banyuwangi',
-            'no_telepon'       => '0333-123456',
-            'email'            => 'info@kliniksehat.com',
+            'nama_klinik'      => 'Klinik dr. Luria Widijana Haribawanti',
+            'alamat'           => 'Jl. Rinjani No.46, Singotrunan',
+            'no_telepon'       => '081333037793',
+            'email'            => 'widijanaluria@gmail.com',
             'jam_operasional'  => json_encode([
-                'Senin - Jumat' => '08.00 - 16.00',
-                'Sabtu'         => '08.00 - 13.00',
+                'Senin - Jumat Pagi' => '07:00 - 09:30',
+                'Senin - Jumat Sore' => '16:00 - 19:15',
+                'Sabtu Pagi'         => '07:00 - 10:30',
+                'Sabtu Sore'         => 'Tutup',
                 'Minggu'        => 'Tutup',
             ]),
-            'deskripsi'        => 'Klinik Sehat Bersama melayani pasien umum dan BPJS dengan tenaga medis berpengalaman.',
+            'deskripsi'        => 'Klinik dr. Luria Widijana Haribawanti melayani pasien umum dengan memprioritaskan kualitas pelayanan dan etika dalam bekerja.',
         ]);
     }
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Klinik Sehat Bersama')</title>
+    <title>@yield('title', 'Klinik Sehat dr. Luria')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
         <div class="container">
             <a class="navbar-brand" href="/">
                 <i class="bi bi-heart-pulse-fill me-2" style="color:var(--primary)"></i>
-                Klinik Sehat Bersama
+                Klinik Sehat dr. Luria
             </a>
 
             {{-- Mobile toggle --}}
@@ -75,7 +75,9 @@
 
         @yield('content')
     </main>
-
+    {{-- Footer --}}
+    @include('components.footer')
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

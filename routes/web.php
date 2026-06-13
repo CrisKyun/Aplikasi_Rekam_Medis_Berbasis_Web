@@ -134,16 +134,8 @@ Route::middleware('auth.dokter')->group(function () {
         Route::get('/staff/{id}/edit', [SuperadminController::class, 'staffEdit'])->name('superadmin.staff.edit');
         Route::put('/staff/{id}/edit', [SuperadminController::class, 'staffUpdate'])->name('superadmin.staff.update');
         Route::delete('/staff/{id}/hapus', [SuperadminController::class, 'staffDestroy'])->name('superadmin.staff.destroy');
-
-        // History Aktivitas
-        Route::get('/history', [SuperadminController::class, 'historyIndex'])->name('superadmin.history.index');
     });
 
-    // History diri sendiri (staff)
-    Route::middleware('auth.dokter')->get('/dokter/history', function () {
-        $history = \App\Models\ActivityLog::where('user_id', session('user_id'))
-            ->latest()
-            ->paginate(20);
-        return view('dokter.history', compact('history'));
-    })->name('dokter.history');
+    // History Aktivitas
+    Route::get('/dokter/history', [DokterController::class, 'historyIndex'])->name('dokter.history');
 });

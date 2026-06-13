@@ -43,7 +43,7 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                         <p class="text-end small mb-0 pt-2"><a href="{{ route('password.request') }}">Lupa Password</a>
-                    </p>
+                        </p>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100">
@@ -60,7 +60,7 @@
             </div>
         </div>
         <p class="text-center text-muted small mt-3">
-            Belum terdaftar? Hubungi staf klinik.
+            Belum terdaftar? Hubungi <a href="https://wa.me/6287887233290" target="_blank">staff klinik.</a>
         </p>
     </div>
 </div>

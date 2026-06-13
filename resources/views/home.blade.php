@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Beranda - Klinik Sehat Bersama')
+@section('title', 'Beranda - Klinik Sehat dr. Luria')
 
 @section('content')
 
@@ -11,7 +11,7 @@
             <div class="col-md-8">
                 <h1 class="fw-bold mb-2" style="color:#fff;font-size:clamp(1.4rem,4vw,2rem);">
                     <i class="bi bi-heart-pulse-fill me-2"></i>
-                    {{ $klinik->nama_klinik ?? 'Klinik Sehat Bersama' }}
+                    {{ $klinik->nama_klinik ?? 'Klinik Sehat dr. Luria' }}
                 </h1>
                 <p class="mb-3 opacity-90" style="font-size:1rem;">
                     {{ $klinik->deskripsi ?? 'Melayani dengan sepenuh hati.' }}

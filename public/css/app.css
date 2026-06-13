@@ -680,3 +680,171 @@ html {
     background: rgba(37, 99, 235, 0.15);
     color: var(--primary);
 }
+
+/* ================================
+   PAGINATION
+================================ */
+.pagination {
+    margin: 0 !important;
+    gap: 0.25rem;
+}
+
+.pagination .page-link {
+    border-radius: var(--radius-sm) !important;
+    border: 1.5px solid var(--border) !important;
+    color: var(--primary) !important;
+    font-size: 0.875rem !important;
+    padding: 0.4rem 0.75rem !important;
+    line-height: 1.5 !important;
+    transition: var(--transition) !important;
+    background: #fff !important;
+}
+
+.pagination .page-link:hover {
+    background: #eff6ff !important;
+    border-color: var(--primary) !important;
+}
+
+.pagination .page-item.active .page-link {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #cbd5e1 !important;
+    border-color: var(--border) !important;
+    background: #f8fafc !important;
+}
+
+/* Perbaiki ukuran icon di pagination */
+.pagination .page-link svg,
+.pagination .page-link i {
+    font-size: 0.875rem !important;
+    width: 1rem !important;
+    height: 1rem !important;
+}
+
+/* ================================
+   BACKGROUND PATTERN
+================================ */
+body {
+    background-color: #f1f5f9;
+    background-image:
+        radial-gradient(
+            circle at 20% 50%,
+            rgba(37, 99, 235, 0.03) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(37, 99, 235, 0.04) 0%,
+            transparent 40%
+        ),
+        radial-gradient(
+            circle at 60% 80%,
+            rgba(16, 185, 129, 0.03) 0%,
+            transparent 40%
+        );
+}
+
+/* ================================
+   FOOTER
+================================ */
+.site-footer {
+    background: #fff;
+    border-top: 1px solid var(--border);
+    margin-top: 3rem;
+    padding: 2.5rem 0 0;
+    font-size: 0.875rem;
+}
+
+.site-footer .footer-brand h6 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.site-footer .footer-brand p {
+    color: #64748b;
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+.site-footer .footer-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+    margin-bottom: 0.75rem;
+}
+
+.site-footer .footer-link {
+    display: block;
+    color: #64748b;
+    text-decoration: none;
+    padding: 0.2rem 0;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+}
+
+.site-footer .footer-link:hover {
+    color: var(--primary);
+}
+
+.site-footer .footer-bottom {
+    background: #f8fafc;
+    border-top: 1px solid var(--border);
+    padding: 1rem 0;
+    margin-top: 2rem;
+}
+
+.site-footer .footer-bottom p {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    margin: 0;
+}
+
+.logo-partner {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    filter: grayscale(20%);
+    transition:
+        filter 0.2s,
+        transform 0.2s;
+}
+
+.logo-partner:hover {
+    filter: grayscale(0%);
+    transform: translateY(-2px);
+}
+
+/* Kontak Person Card */
+.kontak-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.kontak-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+.kontak-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.75rem;
+    font-size: 1.4rem;
+    color: var(--primary);
+}

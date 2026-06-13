@@ -10,11 +10,10 @@ class DokterSeeder extends Seeder
 {
     public function run(): void
     {
-        // Data dokter (tidak perlu akun user lagi)
         $dokterId = DB::table('dokter')->insertGetId([
             'user_id'      => null,
-            'nama_dokter'  => 'dr. Siti Rahayu',
-            'no_hp'        => '081234567890',
+            'nama_dokter'  => 'dr. Luria Widijana Haribawanti',
+            'no_hp'        => '081333037793',
             'bidang_medis' => 'Umum',
         ]);
 
@@ -24,8 +23,8 @@ class DokterSeeder extends Seeder
             DB::table('jadwal_dokter')->insert([
                 'dokter_id'   => $dokterId,
                 'hari'        => $h,
-                'jam_mulai'   => '08:00:00',
-                'jam_selesai' => '16:00:00',
+                'jam_mulai'   => '07:00:00',
+                'jam_selesai' => '19:15:00',
                 'status'      => 'Aktif',
             ]);
         }

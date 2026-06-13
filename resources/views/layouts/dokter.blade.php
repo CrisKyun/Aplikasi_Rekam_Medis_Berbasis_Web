@@ -64,8 +64,8 @@
             </a>
 
             <a href="/dokter/history"
-                class="{{ request()->is('dokter/history') ? 'active' : '' }}">
-                <i class="bi bi-clock-history me-2"></i>History Saya
+                class="{{ request()->is('dokter/history*') ? 'active' : '' }}">
+                <i class="bi bi-clock-history me-2"></i>History Aktivitas
             </a>
 
             @if(session('user_role') == 1)
@@ -74,11 +74,6 @@
             <a href="/superadmin/staff"
                 class="{{ request()->is('superadmin/staff*') ? 'active' : '' }}">
                 <i class="bi bi-people-fill me-2"></i>Kelola Staff
-            </a>
-
-            <a href="/superadmin/history"
-                class="{{ request()->is('superadmin/history*') ? 'active' : '' }}">
-                <i class="bi bi-journal-text me-2"></i>History Staff
             </a>
             @endif
 

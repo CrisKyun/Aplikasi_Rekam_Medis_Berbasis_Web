@@ -27,27 +27,110 @@ class AntriController extends Controller
     // Form daftar antrian
     public function create()
     {
-        // Cek akun aktif
+        // Cek status akun
         $user = \App\Models\User::find(session('user_id'));
         if ($user->status !== 'aktif') {
             return redirect('/antrian')->with('error', 'Akun Anda nonaktif. Hubungi klinik untuk mengaktifkan.');
         }
 
-        $anggotaKeluarga = Pasien::where('user_id', session('user_id'))->get();
-        $dokter          = Dokter::with('jadwalDokter')->get();
+        // Cek jam operasional hari ini
+        $klinik = \App\Models\InfoKlinik::first();
+        $klinikTutup = false;
+        $pesanTutup  = '';
 
-        // Tanggal tersedia: hari ini s/d H+3
-        $tanggalTersedia = [];
-        for ($i = 0; $i <= 3; $i++) {
-            $tgl = Carbon::now()->addDays($i);
-            $tanggalTersedia[] = [
-                'nilai'  => $tgl->format('Y-m-d'),
-                'label'  => $tgl->translatedFormat('l, d M Y'),
-                'hari'   => $tgl->translatedFormat('l'),
+        if ($klinik && $klinik->jam_operasional) {
+            $jamOps  = json_decode($klinik->jam_operasional, true);
+            $hariIni = \Carbon\Carbon::now()->locale('id');
+
+            $hariMap = [
+                'Monday'    => ['Senin', 'Senin - Jumat', 'Senin - Sabtu'],
+                'Tuesday'   => ['Selasa', 'Senin - Jumat', 'Senin - Sabtu'],
+                'Wednesday' => ['Rabu', 'Senin - Jumat', 'Senin - Sabtu'],
+                'Thursday'  => ['Kamis', 'Senin - Jumat', 'Senin - Sabtu'],
+                'Friday'    => ['Jumat', 'Senin - Jumat', 'Senin - Sabtu'],
+                'Saturday'  => ['Sabtu', 'Senin - Sabtu'],
+                'Sunday'    => ['Minggu'],
             ];
+
+            $namaHariEn   = \Carbon\Carbon::now()->format('l');
+            $kemungkinan  = $hariMap[$namaHariEn] ?? [];
+            $jamHariIni   = null;
+
+            foreach ($kemungkinan as $key) {
+                if (isset($jamOps[$key])) {
+                    $jamHariIni = $jamOps[$key];
+                    break;
+                }
+            }
+
+            if (!$jamHariIni || strtolower($jamHariIni) === 'tutup') {
+                $klinikTutup = true;
+                $pesanTutup  = 'Klinik tutup hari ini. Silakan daftar antrian di hari lain.';
+            }
         }
 
-        return view('antrian.create', compact('anggotaKeluarga', 'dokter', 'tanggalTersedia'));
+        // Tanggal tersedia: hari ini s/d H+3
+        // Filter hanya hari yang dokternya praktik
+        $tanggalTersedia = [];
+        for ($i = 0; $i <= 3; $i++) {
+            $tgl        = \Carbon\Carbon::now()->addDays($i);
+            $namaHariEn = $tgl->format('l');
+            $hariMap    = [
+                'Monday'    => 'Senin',
+                'Tuesday'   => 'Selasa',
+                'Wednesday' => 'Rabu',
+                'Thursday'  => 'Kamis',
+                'Friday'    => 'Jumat',
+                'Saturday'  => 'Sabtu',
+                'Sunday'    => 'Minggu',
+            ];
+            $hariIndonesia = $hariMap[$namaHariEn];
+
+            // Cek apakah ada dokter yang praktik hari itu
+            $adaDokter = \App\Models\JadwalDokter::where('hari', $hariIndonesia)
+                ->where('status', 'Aktif')
+                ->exists();
+
+            // Cek jam operasional klinik hari itu
+            $kemungkinanHari = $hariMap[$namaHariEn] ?? $hariIndonesia;
+            $jamHariTersebut = null;
+
+            if ($klinik && $klinik->jam_operasional) {
+                $jamOps = json_decode($klinik->jam_operasional, true);
+                $kemungkinanKeys = [
+                    $hariIndonesia,
+                    'Senin - Jumat',
+                    'Senin - Sabtu',
+                ];
+                foreach ($kemungkinanKeys as $key) {
+                    if (isset($jamOps[$key])) {
+                        $jamHariTersebut = $jamOps[$key];
+                        break;
+                    }
+                }
+            }
+
+            $kliniKBuka = $jamHariTersebut && strtolower($jamHariTersebut) !== 'tutup';
+
+            if ($adaDokter && $kliniKBuka) {
+                $tanggalTersedia[] = [
+                    'nilai' => $tgl->format('Y-m-d'),
+                    'label' => $tgl->translatedFormat('l, d M Y') . ' (' . ($jamHariTersebut ?? '') . ')',
+                    'hari'  => $hariIndonesia,
+                ];
+            }
+        }
+
+        $anggotaKeluarga = \App\Models\Pasien::where('user_id', session('user_id'))->get();
+        $dokter          = \App\Models\Dokter::with('jadwalDokter')->get();
+
+        return view('antrian.create', compact(
+            'anggotaKeluarga',
+            'dokter',
+            'tanggalTersedia',
+            'klinikTutup',
+            'pesanTutup'
+        ));
     }
 
     // Simpan antrian
@@ -125,7 +208,7 @@ class AntriController extends Controller
             'tanggal_kunjungan' => $request->tanggal_kunjungan,
             'nomor_antrian'     => $nomorAntrian,
             'estimasi_jam'      => $estimasiJam,
-            'keluhan_awal'      => $request->keluhan_awal, 
+            'keluhan_awal'      => $request->keluhan_awal,
             'status_antrian'    => 'menunggu',
         ]);
 

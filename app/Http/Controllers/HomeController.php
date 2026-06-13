@@ -10,8 +10,8 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $klinik  = InfoKlinik::first();
-        $dokter  = Dokter::with('jadwalDokter')->get();
+        $klinik = InfoKlinik::first();
+        $dokter = Dokter::with('jadwalDokter')->get();
 
         return view('home', compact('klinik', 'dokter'));
     }
