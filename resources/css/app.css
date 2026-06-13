@@ -9,3 +9,555 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* =========================
+   LOGIN PAGE
+========================= */
+
+.login-page {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef4ff 0%,
+            #f8fbff 50%,
+            #edf5ff 100%
+        );
+}
+
+/* =========================
+   LOGIN CARD
+========================= */
+
+.login-page .card {
+    position: relative;
+    z-index: 2;
+
+    border: none !important;
+
+    border-radius: 24px;
+
+    background: rgba(255,255,255,0.95);
+
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 10px 40px rgba(0,0,0,0.08) !important;
+}
+
+/* =========================
+   ROW
+========================= */
+
+.login-page .row {
+    position: relative;
+    z-index: 2;
+}
+
+/* =========================
+   BACKGROUND
+========================= */
+
+.bg-animation {
+    position: absolute;
+    inset: 0;
+
+    overflow: hidden;
+
+    z-index: 0;
+
+    pointer-events: none;
+}
+
+/* =========================
+   BULAT
+========================= */
+
+.circle {
+    position: absolute;
+
+    border-radius: 50%;
+
+    background: rgba(13,110,253,0.08);
+
+    animation:
+        float 2.5s ease-in-out infinite;
+}
+
+.c1 {
+    width: 280px;
+    height: 280px;
+
+    top: -80px;
+    left: -80px;
+}
+
+.c2 {
+    width: 380px;
+    height: 380px;
+
+    bottom: -120px;
+    right: -120px;
+
+    animation-duration: 3.5s;
+}
+
+.c3 {
+    width: 180px;
+    height: 180px;
+
+    top: 45%;
+    left: 72%;
+
+    animation-duration: 3s;
+}
+
+/* =========================
+   PLUS
+========================= */
+
+.plus {
+    position: absolute;
+
+    font-size: 40px;
+    font-weight: bold;
+
+    color: rgba(13,110,253,0.15);
+
+    animation:
+        pulse 6s ease-in-out infinite;
+}
+
+.p1 {
+    top: 22%;
+    right: 22%;
+}
+
+.p2 {
+    bottom: 20%;
+    left: 18%;
+
+    animation-duration: 8s;
+}
+
+/* =========================
+   ANIMATION FLOAT
+========================= */
+
+@keyframes float {
+
+    0% {
+        transform:
+            translateY(0px)
+            translateX(0px);
+    }
+
+    50% {
+        transform:
+            translateY(-25px)
+            translateX(10px);
+    }
+
+    100% {
+        transform:
+            translateY(0px)
+            translateX(0px);
+    }
+}
+
+/* =========================
+   ANIMATION PULSE
+========================= */
+
+@keyframes pulse {
+
+    0% {
+        transform: scale(1);
+        opacity: 0.15;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.35;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0.15;
+    }
+}
+
+/* =========================
+   ICON MEDIS
+========================= */
+
+.medical-icon{
+    position: absolute;
+
+    color: rgba(13,110,253,0.18);
+
+    z-index: 0;
+
+    animation:
+        floatingIcon 7s ease-in-out infinite;
+
+    pointer-events: none;
+}
+
+/* =========================
+   POSISI ICON
+========================= */
+
+.icon1{
+    font-size: 110px;
+
+    top: 18%;
+    left: 8%;
+}
+
+.icon2{
+    font-size: 95px;
+
+    top: 25%;
+    right: 8%;
+
+    animation-duration: 9s;
+}
+
+.icon3{
+    font-size: 80px;
+
+    bottom: 18%;
+    right: 24%;
+
+    animation-duration: 8s;
+}
+
+.icon4{
+    font-size: 85px;
+
+    bottom: 12%;
+    left: 10%;
+
+    animation-duration: 10s;
+}
+
+.icon5{
+    font-size: 70px;
+
+    top: 60%;
+    left: 48%;
+
+    animation-duration: 6s;
+}
+
+/* =========================
+   ANIMASI ICON
+========================= */
+
+@keyframes floatingIcon{
+
+    0%{
+        transform:
+            translateY(0px)
+            translateX(0px);
+    }
+
+    50%{
+        transform:
+            translateY(-18px)
+            translateX(10px);
+    }
+
+    100%{
+        transform:
+            translateY(0px)
+            translateX(0px);
+    }
+}
+
+.register-link{
+    color:#0d6efd;
+
+    font-weight:600;
+
+    text-decoration:none;
+
+    border-bottom:2px solid #0d6efd;
+
+    padding-bottom:2px;
+
+    transition:all .3s ease;
+}
+
+.register-link:hover{
+    color:#0a58ca;
+
+    border-bottom:2px solid #0a58ca;
+
+    letter-spacing:.3px;
+}
+
+.login-btn{
+    transition:all .3s ease;
+    box-shadow:0 4px 15px rgba(13,110,253,.25);
+}
+
+.login-btn:hover{
+    transform:translateY(-3px);
+
+    box-shadow:0 10px 25px rgba(13,110,253,.35);
+}
+
+.home-btn {
+    transition: all 0.3s ease;
+}
+
+.home-btn:hover {
+    transform: translateY(-3px);
+    background-color: white;
+    color: #0d6efd !important;
+    box-shadow: 0 8px 20px rgba(255,255,255,0.25);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.custom-footer{
+
+    position: relative;
+
+    width: 100vw;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    margin-top: 30px;
+
+    background:
+    linear-gradient(
+        180deg,
+        #29b6ff 0%,
+        #0d6efd 100%
+    );
+
+    color: white;
+
+    overflow: hidden;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+
+.footer-container{
+
+    width: 100%;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 10px 25px;
+
+    flex-wrap: wrap;
+}
+
+/* =========================
+   LEFT
+========================= */
+
+.footer-left{
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+
+    flex: 1;
+}
+
+.footer-logo{
+    width: 55px;
+
+    height: 55px;
+
+    object-fit: contain;
+
+    background: white;
+
+    padding: 5px;
+
+    border-radius: 10px;
+}
+
+/* =========================
+   TEXT
+========================= */
+
+.footer-campus h3,
+.footer-right h3{
+    font-size: 15px;
+
+    font-weight: 700;
+
+    margin-bottom: 12px;
+}
+
+.footer-campus p{
+    font-size: 14px;
+
+    margin-bottom: 6px;
+
+    line-height: 1.5;
+}
+
+.footer-campus i{
+    margin-right: 8px;
+}
+
+/* =========================
+   DIVIDER
+========================= */
+
+.footer-divider{
+    width: 1px;
+
+    height: 120px;
+
+    background: rgba(255,255,255,.3);
+}
+
+/* =========================
+   RIGHT
+========================= */
+
+.footer-right{
+    flex: 1;
+}
+
+.footer-right ul{
+    padding-left: 18px;
+
+    margin: 0;
+}
+
+.footer-right li{
+    font-size: 14px;
+
+    margin-bottom: 8px;
+}
+
+/* =========================
+   BOTTOM
+========================= */
+
+.footer-bottom{
+
+    width: 100%;
+
+    text-align: center;
+
+    background: rgba(0,0,0,.10);
+
+    padding: 10px;
+}
+
+.footer-bottom p{
+
+    margin-top: 25px;
+
+    font-size: 13px;
+}
+
+/* =========================
+   HEART
+========================= */
+
+.heartbeat-line{
+    position: relative;
+
+    width: 100%;
+
+    height: 2px;
+
+    background: rgba(255,255,255,.3);
+}
+
+.heartbeat-line span{
+    position: absolute;
+
+    left: 50%;
+
+    top: -18px;
+
+    transform: translateX(-50%);
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: 50%;
+
+    background: #0d6efd;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 15px;
+
+    animation: pulseHeart 1.5s infinite;
+}
+
+/* =========================
+   ANIMATION
+========================= */
+
+@keyframes pulseHeart{
+
+    0%{
+        transform: translateX(-50%) scale(1);
+    }
+
+    50%{
+        transform: translateX(-50%) scale(1.15);
+    }
+
+    100%{
+        transform: translateX(-50%) scale(1);
+    }
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:768px){
+
+    .footer-container{
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+    .footer-left{
+        flex-direction: column;
+    }
+
+    .footer-divider{
+        width: 100%;
+
+        height: 1px;
+    }
+}
