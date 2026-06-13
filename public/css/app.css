@@ -848,3 +848,14 @@ body {
     font-size: 1.4rem;
     color: var(--primary);
 }
+
+/* Sticky Footer */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
