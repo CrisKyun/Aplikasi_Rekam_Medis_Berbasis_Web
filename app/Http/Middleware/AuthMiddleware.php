@@ -14,6 +14,11 @@ class AuthMiddleware
             return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
+        // Pastikan yang akses halaman pasien adalah role 3 (pasien)
+        if (session('user_role') != 3) {
+            return redirect('/dokter/dashboard');
+        }
+
         return $next($request);
     }
 }

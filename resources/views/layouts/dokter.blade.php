@@ -32,8 +32,20 @@
             </a>
 
             <a href="/dokter/pasien"
-                class="{{ request()->is('dokter/pasien*') ? 'active' : '' }}">
+                class="{{ request()->is('dokter/pasien*') ? 'active' : '' }}"
+                style="position:relative;">
                 <i class="bi bi-people-fill me-2"></i>Data Pasien
+                @if(isset($badgePasienBaru) && $badgePasienBaru > 0)
+                <span style="
+            position:absolute; top:6px; right:10px;
+            background:#d97706; color:#fff;
+            border-radius:50%; min-width:20px; height:20px;
+            font-size:11px; font-weight:700;
+            display:flex; align-items:center; justify-content:center;
+            padding:0 4px;">
+                    {{ $badgePasienBaru }}
+                </span>
+                @endif
             </a>
 
             <a href="/dokter/antrian"

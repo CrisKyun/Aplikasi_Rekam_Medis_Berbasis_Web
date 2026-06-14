@@ -1,7 +1,67 @@
 @extends('layouts.app')
 @section('title', 'Dashboard - Praktik Mandiri dr. Luria Widijana Haribawanti.')
 
+
+
 @section('content')
+
+@php
+$userLogin = \App\Models\User::find(session('user_id'));
+$belumPermanen = $userLogin && $userLogin->expired_at
+&& \Carbon\Carbon::parse($userLogin->expired_at)->isFuture();
+@endphp
+
+@if($belumPermanen)
+<div class="alert mb-4"
+    style="background:#eff6ff;border-left:4px solid #2563eb;color:#1e40af;border-radius:8px;">
+    <div class="d-flex align-items-start gap-2">
+        <i class="bi bi-info-circle-fill mt-1"></i>
+        <div>
+            <p class="fw-semibold mb-1">Akun Anda Belum Aktif Permanen</p>
+            <p class="mb-1 small">
+                Untuk mengaktifkan akun secara permanen, silakan kunjungi klinik
+                dan lakukan pemeriksaan pertama Anda.
+            </p>
+            <p class="mb-0 small">
+                Masa aktif sementara berakhir:
+                <strong>{{ \Carbon\Carbon::parse($userLogin->expired_at)->format('d M Y, H:i') }} WIB</strong>
+                <span class="badge ms-1"
+                    style="background:#dbeafe;color:#1e40af;"
+                    id="countdownPasien">
+                    Menghitung...
+                </span>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const expiredAtPasien = new Date("{{ \Carbon\Carbon::parse($userLogin->expired_at)->toIso8601String() }}");
+
+    function updateCountdownPasien() {
+        const diff = expiredAtPasien - new Date();
+        if (diff <= 0) {
+            document.getElementById('countdownPasien').textContent = 'Sudah berakhir';
+            return;
+        }
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+
+        let text = '';
+        if (d > 0) text += d + 'h ';
+        if (h > 0) text += h + 'j ';
+        text += m + 'm ' + s + 'd';
+
+        document.getElementById('countdownPasien').textContent = '⏱ ' + text;
+    }
+
+    updateCountdownPasien();
+    setInterval(updateCountdownPasien, 1000);
+</script>
+@endif
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h4 class="fw-bold mb-0">

@@ -15,6 +15,14 @@ class SidebarComposer
             ->where('status_antrian', 'menunggu')
             ->count();
 
+        // Pasien yang belum permanen (masih ada expired_at)
+        $pasienBelumPermanen = \App\Models\User::where('role_id', 3)
+            ->where('status', 'aktif')
+            ->whereNotNull('expired_at')
+            ->where('expired_at', '>', Carbon::now())
+            ->count();
+
         $view->with('badgeAntrian', $antrianBaru);
+        $view->with('badgePasienBaru', $pasienBelumPermanen);
     }
 }

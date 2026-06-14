@@ -13,10 +13,12 @@ class User extends Authenticatable
         'password',
         'email',
         'role_id',
+        'status',
+        'expired_at',
         'tanggal_registrasi',
     ];
 
-    protected $hidden = ['password','remember_token'];
+    protected $hidden = ['password', 'remember_token'];
 
     public function pasien()
     {

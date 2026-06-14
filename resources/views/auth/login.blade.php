@@ -62,6 +62,9 @@
         <p class="text-center text-muted small mt-3">
             Belum terdaftar? Hubungi <a href="https://wa.me/6287887233290" target="_blank">staff klinik.</a>
         </p>
+        <p class="text-center text-muted small mt-3">
+            <a href="/">← Kembali ke Beranda</a>
+        </p>
     </div>
 </div>
 @endsection

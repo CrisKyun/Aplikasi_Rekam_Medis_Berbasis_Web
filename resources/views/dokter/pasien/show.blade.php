@@ -67,26 +67,70 @@
                     </tr>
                     {{-- Status Akun --}}
                     <tr>
-                        <td class="text-muted">Status Akun</td>
                         <td>
-                            @php $userPasien = \App\Models\User::find($pasien->user_id); @endphp
-                            @if($userPasien)
-                            <span class="badge {{ $userPasien->status === 'aktif' ? 'bg-success' : 'bg-danger' }}">
-                                {{ ucfirst($userPasien->status) }}
-                            </span>
-                            @if($userPasien->expired_at)
-                            <br>
-                            <small class="text-warning">
-                                <i class="bi bi-clock me-1"></i>
-                                Expired: {{ \Carbon\Carbon::parse($userPasien->expired_at)->format('d M Y') }}
-                                ({{ \Carbon\Carbon::parse($userPasien->expired_at)->diffForHumans() }})
-                            </small>
-                            @else
-                            <br>
-                            <small class="text-success">
-                                <i class="bi bi-infinity me-1"></i>Permanen
-                            </small>
-                            @endif
+                            @php
+                            $userPasien = \App\Models\User::find($pasien->user_id);
+                            $belumPermanen = $userPasien && $userPasien->expired_at
+                            && \Carbon\Carbon::parse($userPasien->expired_at)->isFuture();
+                            @endphp
+
+                            @if($belumPermanen)
+                            {{-- Banner peringatan akun belum permanen --}}
+                            <div class="alert mb-4"
+                                style="background:#fffbeb;border-left:4px solid #d97706;color:#92400e;border-radius:8px;">
+                                <div class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-hourglass-split mt-1" style="font-size:1.1rem;"></i>
+                                    <div>
+                                        <p class="fw-bold mb-1">Akun Belum Divalidasi Permanen</p>
+                                        <p class="mb-1 small">
+                                            Pasien ini mendaftar secara mandiri dan belum pernah berobat.
+                                            Akun akan otomatis <strong>nonaktif</strong> jika tidak ada kunjungan sebelum:
+                                        </p>
+                                        <p class="fw-bold mb-2" style="font-size:1rem;">
+                                            <i class="bi bi-calendar-x me-1"></i>
+                                            {{ \Carbon\Carbon::parse($userPasien->expired_at)->format('d M Y, H:i') }} WIB
+                                            <span class="badge ms-2"
+                                                style="background:#fde68a;color:#92400e;font-size:0.8rem;"
+                                                id="countdownBadge">
+                                                Menghitung...
+                                            </span>
+                                        </p>
+                                        <p class="mb-0 small text-muted">
+                                            Akun akan otomatis permanen setelah dokter menginput rekam medis pertama.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                // Countdown timer
+                                const expiredAt = new Date("{{ \Carbon\Carbon::parse($userPasien->expired_at)->toIso8601String() }}");
+
+                                function updateCountdown() {
+                                    const now = new Date();
+                                    const diff = expiredAt - now;
+
+                                    if (diff <= 0) {
+                                        document.getElementById('countdownBadge').textContent = 'Sudah berakhir';
+                                        return;
+                                    }
+
+                                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                                    let text = '';
+                                    if (days > 0) text += days + 'h ';
+                                    if (hours > 0) text += hours + 'j ';
+                                    text += minutes + 'm ' + seconds + 'd';
+
+                                    document.getElementById('countdownBadge').textContent = '⏱ ' + text;
+                                }
+
+                                updateCountdown();
+                                setInterval(updateCountdown, 1000);
+                            </script>
                             @endif
                         </td>
                     </tr>

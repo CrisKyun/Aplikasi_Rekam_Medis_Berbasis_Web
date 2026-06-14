@@ -50,9 +50,26 @@
                         <td>
                             @php $up = \App\Models\User::find($p->user_id); @endphp
                             @if($up)
-                            <span class="badge {{ $up->status === 'aktif' ? 'bg-success' : 'bg-danger' }}">
-                                {{ ucfirst($up->status) }}
+                            @if($up->expired_at && \Carbon\Carbon::parse($up->expired_at)->isFuture())
+                            {{-- Belum permanen - tampilkan countdown --}}
+                            <span class="badge"
+                                style="background:#fef3c7;color:#92400e;font-size:0.72rem;">
+                                <i class="bi bi-hourglass-split me-1"></i>
+                                Belum Divalidasi
                             </span>
+                            <br>
+                            <small class="text-warning" style="font-size:0.7rem;">
+                                Berakhir {{ \Carbon\Carbon::parse($up->expired_at)->diffForHumans() }}
+                            </small>
+                            @elseif($up->status === 'aktif')
+                            <span class="badge" style="background:#dcfce7;color:#166534;">
+                                <i class="bi bi-patch-check-fill me-1"></i>Tervalidasi
+                            </span>
+                            @else
+                            <span class="badge" style="background:#fee2e2;color:#991b1b;">
+                                <i class="bi bi-x-circle me-1"></i>Nonaktif
+                            </span>
+                            @endif
                             @endif
                         </td>
                         <td>
