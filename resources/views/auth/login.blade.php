@@ -51,7 +51,14 @@
                     </button>
                 </form>
 
-                {{-- tambahkan ini --}}
+                <hr>
+                <p class="text-center small mb-0" style="color:#94a3b8;">
+                    Anda staff klinik?
+                    <a href="/dokter/login" style="color:var(--primary);font-weight:500;">
+                        Login Staff →
+                    </a>
+                </p>
+
                 <hr>
                 <p class="text-center small mb-0">
                     Belum punya akun? <a href="/register">Daftar di sini</a>
