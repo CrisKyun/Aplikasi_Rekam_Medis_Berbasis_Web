@@ -2,7 +2,8 @@
 
 <img src="public/images/logo-rediswangi.png" alt="Logo RedisWangi" width="150">
 
-<h3>RedisWangi</h3>
+<p align="center">
+  <span style="font-size: 36px; font-weight: bold;">RedisWangi</span> </p>
 
 ### Aplikasi Rekam Medis Berbasis Web di Tempat Praktik Mandiri dr. Luria Widijana Haribawanti
 
