@@ -1,9 +1,7 @@
 <div align="center">
 
-<img src="public/images/logo-rediswangi.png" alt="Logo RedisWangi" width="150">
-
+<img src="public/images/logo-rediswangi.png" alt="Logo RedisWangi" width="150"> 
 # RedisWangi
-
 ### Aplikasi Rekam Medis Berbasis Web di Tempat Praktik Mandiri dr. Luria Widijana Haribawanti
 
 **Digitalisasi layanan kesehatan untuk pengelolaan pasien, rekam medis, dan antrean yang lebih terstruktur.**
