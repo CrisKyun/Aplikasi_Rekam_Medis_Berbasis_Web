@@ -2,19 +2,13 @@
 
 <img src="public/images/logo-rediswangi.png" alt="Logo RedisWangi" width="150">
 
-<h1 align="center">RedisWangi</h1>
+<p><big><strong>RedisWangi</strong></big></p>
 
 ### Aplikasi Rekam Medis Berbasis Web di Tempat Praktik Mandiri dr. Luria Widijana Haribawanti
 
 **Digitalisasi layanan kesehatan untuk pengelolaan pasien, rekam medis, dan antrean yang lebih terstruktur.**
 
 `Laravel 13` · `PHP 8.3+` · `Tailwind CSS 4` · `SQLite` · `Vite 8`
-
-<br>
-
-**Project Based Learning 2026**  
-Program Studi Teknologi Rekayasa Perangkat Lunak  
-Politeknik Negeri Banyuwangi
 
 </div>
 
