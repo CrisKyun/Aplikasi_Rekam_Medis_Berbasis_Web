@@ -96,7 +96,7 @@
                         </td>
                         <td>
                             <p class="mb-0 fw-semibold small">
-                                {{ $h->user->nama_lengkap ?? 'Unknown' }}
+                                {{ $h->user->nama_lengkap ?? $h->user->username ?? 'Unknown' }}
                             </p>
                             <span class="badge"
                                 style="{{ ($h->user->role_id ?? 0) == 1

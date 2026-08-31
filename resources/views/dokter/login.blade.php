@@ -27,14 +27,20 @@
                         @enderror
                     </div>
 
+
+                    {{-- Password --}}
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Password</label>
-                        <input type="password" name="password"
+                        <input
+                            type="password"
+                            name="password"
                             class="form-control @error('password') is-invalid @enderror"
-                            placeholder="Password">
+                            placeholder="Masukkan password">
                         @error('password')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <p class="text-end small mb-0 pt-2"><a href="{{ route('password.request') }}">Lupa Password</a>
+                        </p>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100">

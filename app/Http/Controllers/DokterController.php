@@ -79,12 +79,18 @@ class DokterController extends Controller
         return compact('labels', 'beratBadan', 'suhuTubuh', 'sistolik', 'diastolik', 'bmi');
     }
 
-    public function rekamMedisCreate($pasienId)
+    public function rekamMedisCreate($pasienId, $pendaftaranId = null)
     {
         $pasien = Pasien::findOrFail($pasienId);
         $dokter = Dokter::all();
 
-        return view('dokter.rekam-medis.create', compact('pasien', 'dokter'));
+        $keluhanAwal = null;
+        if ($pendaftaranId) {
+            $pendaftaran = Pendaftaran::find($pendaftaranId);
+            $keluhanAwal = $pendaftaran->keluhan_awal ?? null;
+        }
+
+        return view('dokter.rekam-medis.create', compact('pasien', 'dokter', 'keluhanAwal'));
     }
 
     public function rekamMedisStore(Request $request, $pasienId)

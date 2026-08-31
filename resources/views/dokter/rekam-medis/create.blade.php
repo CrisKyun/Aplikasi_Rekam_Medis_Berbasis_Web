@@ -75,7 +75,7 @@
                     <label class="form-label fw-semibold">Keluhan <span class="text-danger">*</span></label>
                     <textarea name="keluhan" rows="3"
                         class="form-control @error('keluhan') is-invalid @enderror"
-                        placeholder="Keluhan pasien...">{{ old('keluhan') }}</textarea>
+                        placeholder="Keluhan pasien...">{{ old('keluhan', $keluhanAwal ?? '') }}</textarea>
                     @error('keluhan')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 

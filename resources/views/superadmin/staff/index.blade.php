@@ -28,7 +28,7 @@
                 @forelse($staff as $s)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $s->nama_lengkap }}</td>
+                    <td>{{ $s->nama_lengkap ?? $s->username ?? '-' }}</td>
                     <td>{{ $s->email }}</td>
                     <td>{{ $s->nik }}</td>
                     <td>

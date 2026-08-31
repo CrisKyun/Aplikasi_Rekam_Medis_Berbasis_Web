@@ -10,6 +10,7 @@ class User extends Authenticatable
         'nik',
         'no_kk',
         'username',
+        'nama_lengkap',
         'password',
         'email',
         'role_id',

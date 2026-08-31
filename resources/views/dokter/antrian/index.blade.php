@@ -178,7 +178,7 @@
                             </div>
                         </td>
                         <td>
-                            <a href="/dokter/pasien/{{ $a->id }}"
+                            <a href="/dokter/pasien/{{ $a->pasien_id }}?pendaftaran_id={{ $a->id }}"
                                 class="btn btn-outline-primary btn-sm">
                                 <i class="bi bi-eye me-1"></i>Detail
                             </a>

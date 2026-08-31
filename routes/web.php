@@ -84,6 +84,10 @@ Route::middleware('auth.dokter')->group(function () {
 
     // Kelola Rekam Medis
     Route::get('/dokter/pasien/{pasienId}/rekam-medis/tambah', [DokterController::class, 'rekamMedisCreate'])->name('dokter.rekam-medis.create');
+    Route::get(
+        '/dokter/pasien/{pasienId}/rekam-medis/tambah/{pendaftaranId?}',
+        [DokterController::class, 'rekamMedisCreate']
+    )->name('dokter.rekam-medis.create');
     Route::post('/dokter/pasien/{pasienId}/rekam-medis/tambah', [DokterController::class, 'rekamMedisStore'])->name('dokter.rekam-medis.store');
     Route::get('/dokter/rekam-medis/{id}/edit', [DokterController::class, 'rekamMedisEdit'])->name('dokter.rekam-medis.edit');
     Route::put('/dokter/rekam-medis/{id}/edit', [DokterController::class, 'rekamMedisUpdate'])->name('dokter.rekam-medis.update');
