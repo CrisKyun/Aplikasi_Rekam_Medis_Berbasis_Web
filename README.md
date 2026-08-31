@@ -240,76 +240,25 @@ database/seeders/
 Untuk membangun ulang database beserta data awal:
 
 ```bash
-php artisan migrate:fresh --seed
+composer require laravel/boost --dev
+
+php artisan boost:install
 ```
 
-> Perintah `migrate:fresh` akan menghapus seluruh tabel dan data yang telah tersimpan. Gunakan hanya pada environment pengembangan.
+Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
 
----
+## Contributing
 
-## Struktur Proyek
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-```text
-RedisWangi/
-├── app/
-│   ├── Console/Commands/
-│   ├── Helpers/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   └── Middleware/
-│   └── Models/
-├── bootstrap/
-├── config/
-├── database/
-│   ├── factories/
-│   ├── migrations/
-│   └── seeders/
-├── public/
-│   └── images/
-├── resources/
-│   ├── css/
-│   ├── js/
-│   └── views/
-├── routes/
-│   └── web.php
-├── storage/
-├── tests/
-├── .env.example
-├── artisan
-├── composer.json
-├── package.json
-└── vite.config.js
-```
+## Code of Conduct
 
----
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Development Team
+## Security Vulnerabilities
 
-| Nama | NIM |
-| --- | --- |
-| Cristiano Ronaldo | 362458302008 |
-| Muhammad Razaka Reza Muharromi | 362458302064 |
-| Tsabitah Rifdah Nur Arifah | 362458302066 |
-| Muhammad Mufqi Fajar | 362458302067 |
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
----
+## License
 
-## Academic Context
-
-RedisWangi dikembangkan sebagai bagian dari **Project Based Learning (PBL) Tahun 2026** oleh mahasiswa Semester 4 Program Studi Teknologi Rekayasa Perangkat Lunak, Jurusan Bisnis dan Informatika, Politeknik Negeri Banyuwangi.
-
-Proyek ini mengintegrasikan proses analisis kebutuhan, perancangan perangkat lunak, pengembangan aplikasi, pengalaman pengguna, keamanan perangkat lunak, dan manajemen proyek dalam penyelesaian permasalahan nyata pada mitra.
-
----
-
-<div align="center">
-
-<img src="public/images/logo-rediswangi.png" alt="Logo RedisWangi" width="80">
-
-### RedisWangi
-
-**Connecting patient care with structured digital health services.**
-
-Project Based Learning · 2026
-
-</div>
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
