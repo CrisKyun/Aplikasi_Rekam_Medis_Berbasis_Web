@@ -567,14 +567,6 @@ h6 {
         font-size: 1.3rem;
     }
 
-    /* Antrian card mobile */
-    .antrian-card .row {
-        flex-direction: column;
-    }
-    .antrian-card .col-md-2 {
-        margin-bottom: 0.5rem;
-    }
-
     /* Navbar public mobile */
     .navbar .d-flex {
         gap: 0.5rem !important;
@@ -660,14 +652,6 @@ h6 {
 .status-batal {
     background: #fee2e2;
     color: #991b1b;
-}
-
-/* Antrian nomor */
-.nomor-antrian {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--primary);
-    line-height: 1;
 }
 
 /* Smooth scrolling */
@@ -858,4 +842,298 @@ body {
 
 main {
     flex: 1;
+}
+
+/* =========================================
+   CARD ANTRIAN - TICKET STYLE
+========================================= */
+
+.ticket-card {
+    position: relative;
+    background: #ffffff;
+    border: none;
+    /* border-radius: 20px; */
+    overflow: visible;
+    /* box-shadow: 0 4px 14px rgba(23, 32, 51, 0.08); */
+    margin-bottom: 24px;
+}
+
+/* =========================================
+   BAGIAN NOMOR ANTRIAN
+========================================= */
+
+.ticket-number-section {
+    padding: 30px 32px 28px;
+    text-align: center;
+}
+
+.ticket-number-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.ticket-number {
+    font-size: 4.5rem;
+    line-height: 1;
+    font-weight: 700;
+    color: #2563eb;
+}
+
+/* =========================================
+   GARIS PUTUS-PUTUS
+========================================= */
+
+.ticket-divider {
+    position: relative;
+    border-top: 3px dashed #dce6ef;
+    margin: 0;
+}
+
+/* =========================================
+   LEKUKAN TIKET
+========================================= */
+
+.ticket-divider::before,
+.ticket-divider::after {
+    content: "";
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    background: rgba(241, 245, 249);
+    border-radius: 50%;
+    top: -3px;
+    transform: translateY(-50%);
+    z-index: 2;
+}
+
+.ticket-divider::before {
+    left: -18px;
+}
+
+.ticket-divider::after {
+    right: -18px;
+}
+
+/* =========================================
+   BAGIAN INFORMASI
+========================================= */
+
+.ticket-info-section {
+    padding: 28px 32px;
+    min-height: 180px;
+}
+
+.ticket-patient {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #172033;
+    margin-bottom: 10px;
+}
+
+.ticket-doctor {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+}
+
+.ticket-info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #64748b;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.ticket-info-row i {
+    color: #2563eb;
+    width: 18px;
+}
+
+/* =========================================
+   BAGIAN WAKTU
+========================================= */
+
+.ticket-middle {
+    padding: 28px 32px;
+}
+
+.ticket-time-block {
+    margin-bottom: 20px;
+}
+
+.ticket-time-block:last-child {
+    margin-bottom: 0;
+}
+
+.ticket-section-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+}
+
+.ticket-time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.2rem;
+    color: #172033;
+}
+
+.ticket-time i {
+    color: #2563eb;
+    font-size: 1.2rem;
+}
+
+.ticket-time strong {
+    color: #2563eb;
+}
+
+/* =========================================
+   BAGIAN STATUS
+========================================= */
+
+.ticket-bottom {
+    padding: 28px 32px 30px;
+}
+
+.ticket-status-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 9px;
+}
+
+.ticket-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.ticket-status-menunggu {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.ticket-status-dipanggil {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.ticket-status-selesai {
+    background: #d1fae5;
+    color: #047857;
+}
+
+.ticket-status-batal {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* =========================================
+   KELUHAN
+========================================= */
+
+.ticket-complaint {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+}
+
+.ticket-complaint strong {
+    color: #172033;
+}
+
+/* =========================================
+   NOTIFIKASI DIPANGGIL
+========================================= */
+
+.ticket-called {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+}
+
+.antrian-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 24px;
+    align-items: start;
+}
+
+.antrian-grid .ticket-card {
+    margin-bottom: 0;
+}
+
+/* Tablet: 2 kolom */
+@media (max-width: 991px) and (min-width: 768px) {
+    .antrian-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 767px) {
+
+    .antrian-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 0 20px;
+    }
+
+    .ticket-number-section {
+        padding: 24px 20px;
+    }
+
+    .ticket-number {
+        font-size: 3.5rem;
+    }
+
+    .ticket-info-section,
+    .ticket-middle,
+    .ticket-bottom {
+        padding-left: 22px;
+        padding-right: 22px;
+    }
+
+    .ticket-divider {
+margin: 0;
+border-top: 3px dashed #dce6ef;
+    }
+
+    .ticket-patient {
+        font-size: 1.15rem;
+    }
+}
+.content-area,
+.antrian-grid {
+    overflow: visible;
+}
+
+.datang-awal{
+    display: block;
+    margin-top: 4px;
+    color: #c76b6b;
+    font-size: 12px;
+    font-weight: 500;
 }
