@@ -3,89 +3,133 @@
 
 @section('content')
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold mb-0">
-        <i class="bi bi-ticket-perforated-fill text-primary me-2"></i>Antrian Saya
-    </h4>
-    <a href="/antrian/daftar" class="btn btn-primary btn-sm">
-        <i class="bi bi-plus-circle me-1"></i>Daftar Antrian
-    </a>
-</div>
-
-@forelse($antrian as $a)
-<div class="card shadow-sm mb-3 border-start border-4
-    {{ $a->status_antrian === 'menunggu' ? 'border-warning' :
-       ($a->status_antrian === 'dipanggil' ? 'border-primary' :
-       ($a->status_antrian === 'selesai' ? 'border-success' : 'border-danger')) }}">
-    <div class="card-body">
-        <div class="row align-items-center">
-
-            {{-- Nomor Antrian --}}
-            <div class="col-md-2 text-center">
-                <div class="display-4 fw-bold text-primary">{{ $a->nomor_antrian }}</div>
-                <small class="text-muted">No. Antrian</small>
-            </div>
-
-            {{-- Info --}}
-            <div class="col-md-7">
-                <h6 class="fw-bold mb-1">{{ $a->pasien->nama_lengkap }}</h6>
-                <p class="mb-1 small">
-                    <i class="bi bi-person-badge me-1 text-muted"></i>
-                    {{ $a->dokter->nama_dokter }} — {{ $a->dokter->bidang_medis }}
-                </p>
-                <p class="mb-1 small">
-                    <i class="bi bi-calendar me-1 text-muted"></i>
-                    {{ \Carbon\Carbon::parse($a->tanggal_kunjungan)->translatedFormat('l, d M Y') }}
-                </p>
-                <p class="mb-0 small">
-                    <i class="bi bi-clock me-1 text-muted"></i>
-                    Estimasi: <strong>{{ \Carbon\Carbon::parse($a->estimasi_jam)->format('H:i') }} WIB</strong>
-                </p>
-                <p class="mb-0 small mt-1">
-                    <i class="bi bi-chat-left-text me-1 text-muted"></i>
-                    <span class="text-muted">Keluhan:</span> {{ $a->keluhan_awal ?? '-' }}
-                </p>
-            </div>
-
-            {{-- Status & Aksi --}}
-            <div class="col-md-3 text-end">
-                <span class="badge fs-6 mb-2
-                    {{ $a->status_antrian === 'menunggu' ? 'bg-warning text-dark' :
-                       ($a->status_antrian === 'dipanggil' ? 'bg-primary' :
-                       ($a->status_antrian === 'selesai' ? 'bg-success' : 'bg-danger')) }}">
-                    {{ ucfirst($a->status_antrian) }}
-                </span>
-
-                @if($a->status_antrian === 'menunggu')
-                <form action="/antrian/{{ $a->id }}/batal" method="POST"
-                    onsubmit="return confirm('Yakin ingin membatalkan antrian ini?')">
-                    @csrf
-                    @method('PATCH')
-                    <button type="submit" class="btn btn-outline-danger btn-sm w-100">
-                        <i class="bi bi-x-circle me-1"></i>Batalkan
-                    </button>
-                </form>
-                @endif
-
-                @if($a->status_antrian === 'dipanggil')
-                <div class="alert alert-primary p-2 mt-2 mb-0 small">
-                    <i class="bi bi-megaphone-fill me-1"></i>
-                    Anda sedang dipanggil!
-                </div>
-                @endif
-            </div>
-
-        </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">
+            <i class="bi bi-ticket-perforated-fill text-primary me-2"></i>Antrian Saya
+        </h4>
+        <a href="/antrian/daftar" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-circle me-1"></i>Daftar Antrian
+        </a>
     </div>
-</div>
-@empty
-<div class="text-center text-muted py-5">
-    <i class="bi bi-ticket-perforated" style="font-size: 3rem;"></i>
-    <p class="mt-3">Belum ada antrian.</p>
-    <a href="/antrian/daftar" class="btn btn-primary btn-sm">
-        <i class="bi bi-plus-circle me-1"></i>Daftar Sekarang
-    </a>
-</div>
-@endforelse
+    <div class="antrian-grid">
+        @forelse($antrian as $a)
 
+            <div class="ticket-card">
+                <div class="ticket-number-section">
+                    <div class="ticket-number-label">
+                        No. Antrian
+                    </div>
+                    <div class="ticket-number">
+                        {{ str_pad($a->nomor_antrian, 2, '0', STR_PAD_LEFT)}}
+                    </div>
+                </div>
+
+                <div class="ticket-divider"></div>
+
+                <div class="ticket-info-section">
+                    <div class="ticket-patient">
+                        {{ $a->pasien->nama_lengkap }}
+                    </div>
+                    <div class="ticket-doctor">
+                        <i class="bi bi-person-badge me-1"></i>
+                        {{ $a->dokter->nama_dokter }}
+                        — {{ $a->dokter->bidang_medis }}
+                    </div>
+                    <div class="ticket-info-row">
+                        <i class="bi bi-calendar"></i>
+                        <span>
+                            {{ \Carbon\Carbon::parse($a->tanggal_kunjungan)->locale('id')->translatedFormat('l, d M Y') }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="ticket-divider"></div>
+
+                <div class="ticket-middle">
+                    <div class="ticket-time-block">
+                        <div class="ticket-section-title">
+                            Waktu Pendaftaran
+                        </div>
+                        <div class="ticket-time">
+                            <i class="bi bi-clock-history"></i>
+                            <strong>
+                                {{ $a->created_at ? $a->created_at->format('H:i') : '-' }}
+                            </strong>
+                            <span>WIB</span>
+                        </div>
+                    </div>
+                    <div class="ticket-time-block">
+                        <div class="ticket-section-title">
+                            Estimasi Pelayanan
+                        </div>
+                        <div class="ticket-time">
+                            <i class="bi bi-clock"></i>
+                            <strong>
+                                {{ \Carbon\Carbon::parse($a->estimasi_jam)->format('H:i') }}
+                            </strong>
+                            <span>WIB</span>
+                            <span class="datang-awal" style="margin-top: -3px">
+                                (datang 15 menit lebih awal)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ticket-divider"></div>
+
+                <div class="ticket-bottom">
+                    <div class="ticket-status-label">Status Antrian</div>
+                    @if($a->status_antrian === 'menunggu')
+                        <span class="ticket-status ticket-status-menunggu">
+                            <i class="bi bi-hourglass-split"></i>Menunggu</span>
+                    @elseif($a->status_antrian === 'dipanggil')
+                        <span class="ticket-status ticket-status-dipanggil">
+                            <i class="bi bi-megaphone-fill"></i>Dipanggil</span>
+                    @elseif($a->status_antrian === 'selesai')
+                        <span class="ticket-status ticket-status-selesai">
+                            <i class="bi bi-check-circle-fill"></i>Selesai</span>
+                    @else
+                        <span class="ticket-status ticket-status-batal">
+                            <i class="bi bi-x-circle-fill"></i>
+                            Batal
+                        </span>
+                    @endif
+                    <div class="ticket-complaint">
+                        <i class="bi bi-chat-left-text me-1"></i>
+                        <strong>Keluhan:</strong>
+                        {{ $a->keluhan_awal ?? '-' }}
+                    </div>
+                    @if($a->status_antrian === 'menunggu')
+                        <form action="/antrian/{{ $a->id }}/batal" method="POST"
+                            onsubmit="return confirm('Yakin ingin membatalkan antrian ini?')">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="btn-danger btn-outline-danger btn-sm" >
+                                <i class="bi bi-x-circle me-1"></i>
+                                Batalkan Antrian
+                            </button>
+                        </form>
+                    @endif
+                    @if($a->status_antrian === 'dipanggil')
+                        <div class="ticket-called mt-2">
+                            <i class="bi bi-megaphone-fill me-1"></i>
+                            <strong>Anda sedang dipanggil!</strong>
+                            Silakan menuju ruang pemeriksaan.
+                        </div>
+                    @endif
+                </div>
+            </div>
+        @empty
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-ticket-perforated" style="font-size: 3rem;"></i>
+                <p class="mt-3">
+                    Belum ada antrian.
+                </p>
+                <a href="/antrian/daftar" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    Daftar Sekarang
+                </a>
+            </div>
+        @endforelse
+    </div>
 @endsection
