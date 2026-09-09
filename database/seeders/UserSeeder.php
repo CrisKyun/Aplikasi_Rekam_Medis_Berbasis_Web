@@ -23,7 +23,20 @@ class UserSeeder extends Seeder
             'tanggal_registrasi' => now(),
         ]);
 
-        // Staff contoh
+        // Admin
+        DB::table('users')->insert([
+            'nik'                => '2222222222222222',
+            'no_kk'             => null,
+            'username'          => 'Admin',
+            'nama_lengkap'      => 'Admin Klinik',
+            'password'          => Hash::make('12345678'),
+            'email'             => 'admin@gmail.com',
+            'role_id'           => 2,
+            'status'            => 'aktif',
+            'tanggal_registrasi' => now(),
+        ]);
+
+        // Dokter
         DB::table('users')->insert([
             'nik'                => '3510164611690003',
             'no_kk'             => null,
@@ -31,12 +44,12 @@ class UserSeeder extends Seeder
             'nama_lengkap'      => 'dr. Luria Widijana Haribawanti',
             'password'          => Hash::make('luriadokter0606@'),
             'email'             => 'widijanaluria@gmail.com',
-            'role_id'           => 2,
+            'role_id'           => 3,
             'status'            => 'aktif',
             'tanggal_registrasi' => now(),
         ]);
 
-        // Pasien contoh
+        // Pasien
         DB::table('users')->insert([
             'nik'                => '1111111111111111',
             'no_kk'             => '1111111111111111',

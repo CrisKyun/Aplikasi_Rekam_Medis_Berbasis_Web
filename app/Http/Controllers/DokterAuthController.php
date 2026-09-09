@@ -23,9 +23,8 @@ class DokterAuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        // Cari user dengan role superadmin atau staff
         $user = User::where('email', $request->email)
-            ->whereIn('role_id', [1, 2])
+            ->whereIn('role_id', [1, 2, 3])
             ->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
@@ -33,6 +32,14 @@ class DokterAuthController extends Controller
                 'email' => 'Email atau password salah.',
             ])->withInput();
         }
+
+        $roleNama = match($user->role_id) {
+            1 => 'Superadmin',
+            2 => 'Admin',
+            3 => 'Dokter',
+            default => 'Staff',
+        };
+
 
         session([
             'user_id'        => $user->id,

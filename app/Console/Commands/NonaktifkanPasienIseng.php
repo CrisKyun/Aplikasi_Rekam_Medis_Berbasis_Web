@@ -15,7 +15,7 @@ class NonaktifkanPasienIseng extends Command
     public function handle()
     {
         // Ambil user pasien yang aktif & sudah expired
-        $users = User::where('role_id', 2)
+        $users = User::where('role_id', 4)
             ->where('status', 'aktif')
             ->whereNotNull('expired_at')
             ->where('expired_at', '<=', Carbon::now())

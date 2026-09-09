@@ -16,7 +16,7 @@ class SidebarComposer
             ->count();
 
         // Pasien yang belum permanen (masih ada expired_at)
-        $pasienBelumPermanen = \App\Models\User::where('role_id', 3)
+        $pasienBelumPermanen = \App\Models\User::where('role_id', 4)
             ->where('status', 'aktif')
             ->whereNotNull('expired_at')
             ->where('expired_at', '>', Carbon::now())

@@ -98,11 +98,16 @@
                             <p class="mb-0 fw-semibold small">
                                 {{ $h->user->nama_lengkap ?? $h->user->username ?? 'Unknown' }}
                             </p>
-                            <span class="badge"
-                                style="{{ ($h->user->role_id ?? 0) == 1
-                                    ? 'background:#fee2e2;color:#991b1b;'
-                                    : 'background:#dbeafe;color:#1e40af;' }}">
-                                {{ ($h->user->role_id ?? 0) == 1 ? 'Superadmin' : 'Staff' }}
+                            @php
+                            $roleConfig = [
+                            1 => ['Superadmin', '#fee2e2', '#991b1b'],
+                            2 => ['Admin', '#fef3c7', '#92400e'],
+                            3 => ['Dokter', '#dbeafe', '#1e40af'],
+                            ];
+                            $rc = $roleConfig[$h->user->role_id ?? 0] ?? ['Unknown', '#f8fafc', '#64748b'];
+                            @endphp
+                            <span class="badge" style="background:{{ $rc[1] }};color:{{ $rc[2] }};">
+                                {{ $rc[0] }}
                             </span>
                         </td>
                         <td>

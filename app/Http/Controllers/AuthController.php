@@ -39,7 +39,7 @@ class AuthController extends Controller
             ])->withInput();
         }
 
-        if ($user->role_id != 3) {
+        if ($user->role_id != 4) {
             return back()->withErrors([
                 'nik' => 'Akun ini bukan akun pasien. Gunakan halaman login yang sesuai.'
             ])->withInput();
@@ -114,7 +114,7 @@ class AuthController extends Controller
             'username'          => $request->username,
             'password'          => Hash::make($request->password),
             'email'             => $request->email,
-            'role_id'           => 3,
+            'role_id'           => 4,
             'status'            => 'aktif',
             'expired_at'        => now()->addDays(7),
             'tanggal_registrasi' => now(),

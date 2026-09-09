@@ -12,7 +12,7 @@ class SuperadminController extends Controller
     // Daftar semua staff
     public function staffIndex()
     {
-        $staff = User::whereIn('role_id', [1, 2])->latest()->get();
+        $staff = User::whereIn('role_id', [1, 2, 3])->latest()->get();
         return view('superadmin.staff.index', compact('staff'));
     }
 
@@ -30,7 +30,7 @@ class SuperadminController extends Controller
             'email'        => 'required|email|unique:users,email',
             'nik'          => 'required|digits:16|unique:users,nik',
             'password'     => 'required|min:6|confirmed',
-            'role_id'      => 'required|in:1,2',
+            'role_id'      => 'required|in:1,2,3',
         ], [
             'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
             'email.required'        => 'Email wajib diisi.',
@@ -55,7 +55,13 @@ class SuperadminController extends Controller
         \App\Helpers\ActivityHelper::log(
             'tambah_staff',
             'staff',
-            "Menambahkan akun staff baru: {$user->nama_lengkap} ({$user->email})",
+            "Menambahkan akun: {$user->nama_lengkap} sebagai" .
+                match ($user->role_id) {
+                    1 => 'Superadmin',
+                    2 => 'Admin',
+                    3 => 'Dokter',
+                    default => '-'
+                },
             $user->id,
             'User'
         );

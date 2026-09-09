@@ -11,7 +11,7 @@ class DokterSeeder extends Seeder
     public function run(): void
     {
         $dokterId = DB::table('dokter')->insertGetId([
-            'user_id'      => null,
+            'user_id'      => 3,
             'nama_dokter'  => 'dr. Luria Widijana Haribawanti',
             'no_hp'        => '081333037793',
             'bidang_medis' => 'Umum',

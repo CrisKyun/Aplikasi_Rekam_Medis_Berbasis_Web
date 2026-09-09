@@ -46,10 +46,23 @@
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Role <span class="text-danger">*</span></label>
                     <select name="role_id" class="form-select @error('role_id') is-invalid @enderror">
-                        <option value="2" {{ old('role_id') == 2 ? 'selected' : '' }}>Staff</option>
-                        <option value="1" {{ old('role_id') == 1 ? 'selected' : '' }}>Superadmin</option>
+                        <option value="">-- Pilih Role --</option>
+                        <option value="3" {{ old('role_id') == 3 ? 'selected' : '' }}>
+                            Dokter
+                        </option>
+                        <option value="2" {{ old('role_id') == 2 ? 'selected' : '' }}>
+                            Admin
+                        </option>
+                        <option value="1" {{ old('role_id') == 1 ? 'selected' : '' }}>
+                            Superadmin
+                        </option>
                     </select>
                     @error('role_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    <div class="form-text">
+                        <strong>Dokter</strong> - Input rekam medis & kelola antrian<br>
+                        <strong>Admin</strong> - Kelola klinik, antrian & data pasien<br>
+                        <strong>Superadmin</strong> - Semua akses + kelola akun staff
+                    </div>
                 </div>
 
                 <div class="col-md-6">

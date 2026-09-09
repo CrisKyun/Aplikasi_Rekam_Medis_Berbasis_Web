@@ -14,7 +14,7 @@ class DokterMiddleware
         }
 
         // Role 1 (superadmin) dan 2 (staff) boleh akses
-        if (!in_array(session('user_role'), [1, 2])) {
+        if (!in_array(session('user_role'), [1, 2, 3])) {
             return redirect('/')->with('error', 'Akses ditolak.');
         }
 

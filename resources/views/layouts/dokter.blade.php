@@ -22,7 +22,13 @@
             <h6 class="mb-0">
                 <i class="bi bi-heart-pulse-fill me-2"></i>Klinik Sehat
             </h6>
-            <small>Panel {{ session('user_role_nama') ?? 'Dokter' }}</small>
+            <small>
+                Panel
+                @if(session('user_role') == 1) Superadmin
+                @elseif(session('user_role') == 2) Admin
+                @elseif(session('user_role') == 3) Dokter
+                @endif
+            </small>
         </div>
 
         <nav class="py-1">
@@ -82,7 +88,6 @@
 
             @if(session('user_role') == 1)
             <div class="section-label">Superadmin</div>
-
             <a href="/superadmin/staff"
                 class="{{ request()->is('superadmin/staff*') ? 'active' : '' }}">
                 <i class="bi bi-people-fill me-2"></i>Kelola Staff
@@ -103,7 +108,14 @@
                         {{ session('user_nama') }}
                     </p>
                     <p class="mb-0 text-muted" style="font-size:0.72rem;">
-                        {{ session('user_role_nama') ?? 'Staff' }}
+                        @php
+                        echo match(session('user_role')) {
+                        1 => 'Superadmin',
+                        2 => 'Admin',
+                        3 => 'Dokter',
+                        default => 'Staff',
+                        };
+                        @endphp
                     </p>
                 </div>
             </div>
