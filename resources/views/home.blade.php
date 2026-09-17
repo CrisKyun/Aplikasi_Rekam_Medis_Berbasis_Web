@@ -760,10 +760,10 @@
     <div class="text-center mb-4">
         <p class="fw-bold mb-1" style="color:#2563eb;font-size:0.8rem;
            text-transform:uppercase;letter-spacing:0.08em;">
-            — Dikembangkan Oleh
+            — Developed By
         </p>
         <h2 class="fw-bold" style="font-size:clamp(1.2rem,3vw,1.6rem);">
-            Tim di Balik Sistem Ini
+            Pokok Yakin Team
         </h2>
     </div>
 
