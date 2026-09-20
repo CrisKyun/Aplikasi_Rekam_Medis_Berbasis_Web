@@ -72,7 +72,7 @@
                         </label>
                         <select name="dokter_id" id="dokterSelect"
                             class="form-select @error('dokter_id') is-invalid @enderror"
-                            onchange="updateJadwal()">
+                            onchange="updateJadwal(); updateKuota();">
                             <option value="">-- Pilih Dokter --</option>
                             @foreach($dokter as $dr)
                             <option value="{{ $dr->id }}"
@@ -93,7 +93,8 @@
                             Tanggal Kunjungan <span class="text-danger">*</span>
                         </label>
                         <select name="tanggal_kunjungan"
-                            class="form-select @error('tanggal_kunjungan') is-invalid @enderror">
+                            class="form-select @error('tanggal_kunjungan') is-invalid @enderror"
+                            onchange="updateKuota()">
                             <option value="">-- Pilih Tanggal --</option>
                             @foreach($tanggalTersedia as $tgl)
                             <option value="{{ $tgl['nilai'] }}"
@@ -106,6 +107,7 @@
                         @error('tanggal_kunjungan')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <div id="kuotaInfo" class="mt-2"></div>
                     </div>
 
                     <div class="mb-3">
@@ -127,7 +129,7 @@
                     <div class="alert alert-info small">
                         <i class="bi bi-info-circle me-2"></i>
                         Estimasi waktu dihitung otomatis. Setiap pasien mendapat waktu
-                        <strong>15 menit</strong>.
+                        <strong>15 menit estimasi pelayanan
                     </div>
 
                     <hr>
@@ -148,6 +150,9 @@
 </div>
 
 <script>
+    // Data kuota antrian per dokter & tanggal (dari server)
+    const kuota = @json($kuota ?? []);
+
     function updateJadwal() {
         const select = document.getElementById('dokterSelect');
         const option = select.options[select.selectedIndex];
@@ -160,6 +165,49 @@
         } else {
             info.innerHTML = '';
         }
+    }
+
+    function updateKuota() {
+        const dokterSelect = document.getElementById('dokterSelect');
+        const tanggalSelect = document.querySelector('select[name="tanggal_kunjungan"]');
+        const info = document.getElementById('kuotaInfo');
+        const submitBtn = document.querySelector('form button[type="submit"]');
+
+        const dokterId = dokterSelect ? dokterSelect.value : '';
+        const tanggal = tanggalSelect ? tanggalSelect.value : '';
+
+        if (!dokterId || !tanggal || !kuota[dokterId] || !kuota[dokterId][tanggal]) {
+            info.innerHTML = '';
+            if (submitBtn) submitBtn.disabled = false;
+            return;
+        }
+
+        const terisi = kuota[dokterId][tanggal].terisi;
+        const limit = kuota[dokterId][tanggal].limit;
+        const sisa = Math.max(limit - terisi, 0);
+
+        if (sisa <= 0) {
+            info.innerHTML =
+                '<div class="alert alert-danger py-2 px-3 small mb-0">' +
+                '<i class="bi bi-x-circle me-1"></i>' +
+                'Kuota antrian dokter ini untuk tanggal tersebut sudah <strong>penuh</strong> ' +
+                '(0 dari ' + limit + ' tersisa). Silakan pilih tanggal lain.' +
+                '</div>';
+            if (submitBtn) submitBtn.disabled = true;
+        } else {
+            info.innerHTML =
+                '<div class="alert alert-success py-2 px-3 small mb-0">' +
+                '<i class="bi bi-check-circle me-1"></i>' +
+                'Sisa kuota antrian: <strong>' + sisa + '</strong> dari <strong>' + limit + '</strong> antrian tersedia.' +
+                '</div>';
+            if (submitBtn) submitBtn.disabled = false;
+        }
+    }
+
+    // Jalankan sekali saat halaman dimuat (untuk nilai old())
+    updateQuotaOnLoad();
+    function updateQuotaOnLoad() {
+        updateKuota();
     }
 </script>
 

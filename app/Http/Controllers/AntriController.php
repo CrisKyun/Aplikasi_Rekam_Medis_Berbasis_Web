@@ -33,7 +33,7 @@ class AntriController extends Controller
         }
 
         $klinik      = \App\Models\InfoKlinik::first();
-        $klinikTutup = true;
+        $klinikTutup = false;
         $pesanTutup  = '';
 
         if ($klinik && $klinik->jam_operasional) {
@@ -119,12 +119,39 @@ class AntriController extends Controller
         $anggotaKeluarga = \App\Models\Pasien::where('user_id', session('user_id'))->get();
         $dokter          = \App\Models\Dokter::with('jadwalDokter')->get();
 
+        // Kuota antrian per dokter & tanggal (untuk info sisa kuota di form)
+        $tanggalNilai = array_column($tanggalTersedia, 'nilai');
+        $kuotaMap = [];
+        if (!empty($tanggalNilai)) {
+            $kuotaRows = \App\Models\Pendaftaran::selectRaw('dokter_id, tanggal_kunjungan, COUNT(*) as total')
+                ->whereIn('tanggal_kunjungan', $tanggalNilai)
+                ->where('status_antrian', '!=', 'batal')
+                ->groupBy('dokter_id', 'tanggal_kunjungan')
+                ->get();
+
+            foreach ($kuotaRows as $row) {
+                $kuotaMap[$row->dokter_id][$row->tanggal_kunjungan] = $row->total;
+            }
+        }
+
+        $kuota = [];
+        foreach ($dokter as $dr) {
+            foreach ($tanggalTersedia as $tgl) {
+                $limit                 = $dr->limit_harian ?? 100;
+                $kuota[$dr->id][$tgl['nilai']] = [
+                    'terisi' => $kuotaMap[$dr->id][$tgl['nilai']] ?? 0,
+                    'limit'  => $limit,
+                ];
+            }
+        }
+
         return view('antrian.create', compact(
             'anggotaKeluarga',
             'dokter',
             'tanggalTersedia',
             'klinikTutup',
-            'pesanTutup'
+            'pesanTutup',
+            'kuota'
         ));
     }
 
@@ -224,6 +251,27 @@ class AntriController extends Controller
 
         if ($sudahAntri) {
             return back()->with('error', 'Pasien sudah memiliki antrian untuk dokter dan tanggal ini.')->withInput();
+        }
+
+        // ================================
+        // CEK KUOTA / LIMIT ANTRIAN HARIAN
+        // ================================
+        $dokter         = Dokter::findOrFail($request->dokter_id);
+        $limitHarian    = $dokter->limit_harian ?? 100;
+
+        $jumlahTerisi = Pendaftaran::where('dokter_id', $request->dokter_id)
+            ->where('tanggal_kunjungan', $request->tanggal_kunjungan)
+            ->where('status_antrian', '!=', 'batal')
+            ->count();
+
+        if ($jumlahTerisi >= $limitHarian) {
+            $tglLabel = Carbon::parse($request->tanggal_kunjungan)
+                ->locale('id')
+                ->translatedFormat('l, d M Y');
+
+            return back()
+                ->with('error', "Kuota antrian {$dokter->nama_dokter} untuk {$tglLabel} sudah penuh ({$jumlahTerisi}/{$limitHarian}). Silakan pilih dokter atau tanggal lain.")
+                ->withInput();
         }
 
         // Hitung nomor antrian

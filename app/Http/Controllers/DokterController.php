@@ -450,7 +450,54 @@ class DokterController extends Controller
 
         $dokter = Dokter::all();
 
-        return view('dokter.antrian.index', compact('antrian', 'tanggal', 'dokter', 'dokterId'));
+        // Kuota / limit antrian harian per dokter untuk tanggal terpilih
+        $kuota = [];
+        foreach ($dokter as $dr) {
+            $terisi = Pendaftaran::where('dokter_id', $dr->id)
+                ->where('tanggal_kunjungan', $tanggal)
+                ->where('status_antrian', '!=', 'batal')
+                ->count();
+
+            $kuota[$dr->id] = [
+                'limit'  => $dr->limit_harian ?? 100,
+                'terisi' => $terisi,
+            ];
+        }
+
+        return view('dokter.antrian.index', compact('antrian', 'tanggal', 'dokter', 'dokterId', 'kuota'));
+    }
+
+    // ================================
+    // ATUR LIMIT ANTRIAN HARIAN DOKTER
+    // ================================
+    public function antrianUpdateLimit(Request $request, $dokterId)
+    {
+        $request->validate([
+            'limit_harian' => 'required|integer|min:1|max:1000',
+        ], [
+            'limit_harian.required' => 'Limit antrian wajib diisi.',
+            'limit_harian.integer'  => 'Limit antrian harus berupa angka.',
+            'limit_harian.min'      => 'Limit antrian minimal 1.',
+            'limit_harian.max'      => 'Limit antrian maksimal 1000.',
+        ]);
+
+        $dokter = Dokter::findOrFail($dokterId);
+        $limitLama = $dokter->limit_harian ?? 100;
+
+        Dokter::where('id', $dokter->id)->update([
+            'limit_harian' => $request->limit_harian,
+        ]);
+
+        \App\Helpers\ActivityHelper::log(
+            'ubah_limit_antrian',
+            'dokter',
+            "Mengubah limit antrian harian {$dokter->nama_dokter} dari {$limitLama} menjadi {$request->limit_harian}",
+            $dokter->id,
+            'Dokter'
+        );
+
+        return redirect()->back()
+            ->with('success', "Limit antrian harian {$dokter->nama_dokter} berhasil diubah: {$limitLama} → {$request->limit_harian}.");
     }
 
     public function antrianPanggil($id)
