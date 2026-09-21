@@ -68,7 +68,7 @@
                                 {{ \Carbon\Carbon::parse($a->estimasi_jam)->format('H:i') }}
                             </strong>
                             <span>WIB</span>
-                            <span class="datang-awal" style="margin-top: -3px">
+                            <span class="datang-awal" style="margin-top: -3px; font-style: italic; color: #000000; font-weight: 900;">
                                 (datang 15 menit lebih awal)
                             </span>
                         </div>
