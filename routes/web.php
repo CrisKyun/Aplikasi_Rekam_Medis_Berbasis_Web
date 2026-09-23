@@ -113,6 +113,7 @@ Route::middleware('auth.dokter')->group(function () {
 
     // ANTRIAN DOKTER
     Route::get('/dokter/antrian', [DokterController::class, 'antrianIndex'])->name('dokter.antrian.index');
+    Route::patch('/dokter/antrian/limit/{dokterId}', [DokterController::class, 'antrianUpdateLimit'])->name('dokter.antrian.update-limit');
     Route::patch('/dokter/antrian/{id}/panggil', [DokterController::class, 'antrianPanggil'])->name('dokter.antrian.panggil');
     Route::patch('/dokter/antrian/{id}/selesai', [DokterController::class, 'antrianSelesai'])->name('dokter.antrian.selesai');
     Route::patch('/dokter/antrian/{id}/batal', [DokterController::class, 'antrianBatal'])->name('dokter.antrian.batal');

@@ -4,6 +4,102 @@
 
 @section('content')
 
+{{-- Pengaturan Limit Antrian Harian --}}
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white d-flex align-items-center justify-content-between py-3">
+        <div class="fw-bold">
+            <i class="bi bi-sliders me-2 text-primary"></i>Pengaturan Limit Antrian Harian
+        </div>
+        <span class="badge bg-info-subtle text-info">
+            <i class="bi bi-info-circle me-1"></i>Default otomatis: 100 per dokter/hari
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Dokter</th>
+                        <th class="text-center">Limit Harian</th>
+                        <th class="text-center">Terdaftar ({{ \Carbon\Carbon::parse($tanggal)->format('d M Y') }})</th>
+                        <th class="text-center">Sisa Kuota</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($dokter as $dr)
+                    @php
+                    $d = $kuota[$dr->id] ?? ['limit' => 100, 'terisi' => 0];
+                    $sisa = max($d['limit'] - $d['terisi'], 0);
+                    @endphp
+                    <tr>
+                        <td>
+                            <p class="mb-0 fw-semibold">{{ $dr->nama_dokter }}</p>
+                            <small class="text-muted">{{ $dr->bidang_medis }}</small>
+                        </td>
+                        <td class="text-center">
+                            <form action="/dokter/antrian/limit/{{ $dr->id }}" method="POST"
+                                class="d-flex align-items-center justify-content-center gap-1">
+                                @csrf @method('PATCH')
+                                <button type="button" class="btn btn-outline-secondary btn-sm btn-step"
+                                    data-target="limit-{{ $dr->id }}" data-step="-1">
+                                    <i class="bi bi-dash-lg"></i>
+                                </button>
+                                <input type="number" name="limit_harian" id="limit-{{ $dr->id }}"
+                                    value="{{ $d['limit'] }}" min="1" max="1000"
+                                    class="form-control form-control-sm text-center fw-bold"
+                                    style="width: 90px;">
+                                <button type="button" class="btn btn-outline-secondary btn-sm btn-step"
+                                    data-target="limit-{{ $dr->id }}" data-step="1">
+                                    <i class="bi bi-plus-lg"></i>
+                                </button>
+                                <button type="submit" class="btn btn-primary btn-sm ms-1">
+                                    <i class="bi bi-check-lg me-1"></i>Simpan
+                                </button>
+                            </form>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-light text-dark border">{{ $d['terisi'] }}</span>
+                        </td>
+                        <td class="text-center">
+                            @if($sisa > 0)
+                            <span class="badge bg-success-subtle text-success">
+                                {{ $sisa }} tersisa
+                            </span>
+                            @else
+                            <span class="badge bg-danger-subtle text-danger">
+                                <i class="bi bi-x-circle me-1"></i>Penuh
+                            </span>
+                            @endif
+                        </td>
+                        <td class="text-end">
+                            @if($d['terisi'] > $d['limit'])
+                            <span class="small text-danger">
+                                <i class="bi bi-exclamation-triangle me-1"></i>Melebihi limit
+                            </span>
+                            @endif
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            Belum ada dokter terdaftar.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="form-text mt-2">
+            <i class="bi bi-info-circle me-1"></i>
+            Limit harian otomatis <strong>100 antrian per dokter per hari</strong>.
+            Staff dan dokter dapat menambah atau mengurangi limit dengan tombol
+            <strong>+</strong> / <strong>−</strong>, lalu klik <strong>Simpan</strong>.
+            Setelah kuota penuh, pasien tidak dapat mendaftar antrian untuk dokter & tanggal tersebut.
+        </div>
+    </div>
+</div>
+
 {{-- Filter --}}
 <div class="card shadow-sm border-0 mb-4">
     <div class="card-body">
@@ -197,5 +293,19 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Tombol +/- untuk limit antrian harian
+    document.querySelectorAll('.btn-step').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var input = document.getElementById(this.dataset.target);
+            if (!input) return;
+            var val = parseInt(input.value || 0, 10);
+            var step = parseInt(this.dataset.step || 1, 10);
+            val = isNaN(val) ? 100 : val + step;
+            input.value = Math.min(Math.max(val, 1), 1000);
+        });
+    });
+</script>
 
 @endsection
