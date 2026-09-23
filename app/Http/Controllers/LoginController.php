@@ -24,7 +24,7 @@ class LoginController extends Controller
             'kredensial' => 'required|string',
             'password'   => 'required|min:6',
         ], [
-            'kredensial.required' => 'NIK atau Email wajib diisi.',
+            'kredensial.required' => 'Username wajib diisi.',
             'password.required'   => 'Password wajib diisi.',
             'password.min'        => 'Password minimal 6 karakter.',
         ]);
@@ -50,8 +50,8 @@ class LoginController extends Controller
         if (!$user || !Hash::check($request->password, $user->password)) {
             return back()->withErrors([
                 'kredensial' => $isEmail
-                    ? 'Email atau password salah.'
-                    : 'NIK atau password salah.',
+                    ? 'Username atau password salah.'
+                    : 'Username atau password salah.',
             ])->withInput();
         }
 
