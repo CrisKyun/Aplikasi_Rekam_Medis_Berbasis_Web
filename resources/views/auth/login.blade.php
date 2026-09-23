@@ -52,58 +52,38 @@
                 {{-- Kanan: Form --}}
                 <div class="col-md-7">
                     <div class="p-4 p-md-5 pt-md-5 mt-md-4">
-
-                        <!-- <h4 class="fw-bold mb-1">Masuk ke Akun</h4>
-                        <p class="text-muted small mb-4">
-                            Masukkan NIK (pasien) atau Email (staff/dokter)
-                        </p>
-
-                        {{-- Info Box --}}
-                        <div class="mb-4 p-3 rounded-3"
-                            style="background:#f8fafc;border:1px solid #e2e8f0;">
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div style="width:28px;height:28px;background:#dbeafe;
-                                                    border-radius:6px;display:flex;align-items:center;
-                                                    justify-content:center;flex-shrink:0;">
-                                            <i class="bi bi-person-fill" style="color:#1d4ed8;font-size:0.75rem;"></i>
-                                        </div>
-                                        <div>
-                                            <p class="mb-0 fw-semibold" style="font-size:0.72rem;color:#0f172a;">Pasien</p>
-                                            <p class="mb-0" style="font-size:0.68rem;color:#64748b;">Gunakan NIK</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div style="width:28px;height:28px;background:#dcfce7;
-                                                    border-radius:6px;display:flex;align-items:center;
-                                                    justify-content:center;flex-shrink:0;">
-                                            <i class="bi bi-person-badge-fill" style="color:#16a34a;font-size:0.75rem;"></i>
-                                        </div>
-                                        <div>
-                                            <p class="mb-0 fw-semibold" style="font-size:0.72rem;color:#0f172a;">Dokter / Admin</p>
-                                            <p class="mb-0" style="font-size:0.68rem;color:#64748b;">Gunakan Email</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-
                         <form action="/login" method="POST">
                             @csrf
 
+                            {{-- Alert error umum --}}
+                            @if($errors->any())
+                            <div class="alert mb-4 p-3"
+                                style="background:#fef2f2;border-left:4px solid #dc2626;
+                border-radius:10px;color:#991b1b;">
+                                <div class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-exclamation-circle-fill mt-1 flex-shrink-0"></i>
+                                    <div>
+                                        <p class="fw-semibold mb-1" style="font-size:0.875rem;">
+                                            Login gagal
+                                        </p>
+                                        @foreach($errors->all() as $error)
+                                        <p class="mb-0 small">{{ $error }}</p>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+
                             {{-- Input NIK / Email --}}
                             <div class="mb-3">
-                                <label class="form-label fw-semibold">NIK atau Email</label>
+                                <label class="form-label fw-semibold">Username</label>
                                 <div style="position:relative;">
                                     <input type="text"
                                         name="kredensial"
                                         id="kredensialInput"
                                         class="form-control @error('kredensial') is-invalid @enderror"
                                         value="{{ old('kredensial') }}"
-                                        placeholder="Masukkan NIK (16 digit) atau Email"
+                                        placeholder="Masukkan Username"
                                         autocomplete="username"
                                         oninput="detectInput(this.value)">
                                     <span id="inputBadge"
@@ -180,32 +160,6 @@
 </div>
 
 <script>
-    // Deteksi input NIK atau Email
-    function detectInput(value) {
-        const badge = document.getElementById('inputBadge');
-        const isEmail = value.includes('@');
-        const isNIK = /^\d+$/.test(value) && value.length >= 1;
-
-        if (value.length === 0) {
-            badge.style.display = 'none';
-            return;
-        }
-
-        badge.style.display = 'inline-block';
-
-        if (isEmail) {
-            badge.textContent = 'Email (Staff/Dokter)';
-            badge.style.background = '#dcfce7';
-            badge.style.color = '#166534';
-        } else if (isNIK) {
-            badge.textContent = 'NIK (Pasien)';
-            badge.style.background = '#dbeafe';
-            badge.style.color = '#1e40af';
-        } else {
-            badge.style.display = 'none';
-        }
-    }
-
     // Toggle show/hide password
     function togglePassword() {
         const input = document.getElementById('passwordInput');
