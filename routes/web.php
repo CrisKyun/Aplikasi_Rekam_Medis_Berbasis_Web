@@ -11,13 +11,19 @@ use App\Http\Controllers\DokterController;
 use App\Http\Controllers\AntriController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\SuperadminController;
-
+use App\Http\Controllers\LoginController;
 // ================================
 // PUBLIK (tanpa login)
 // ================================
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::get('/login', [LoginController::class, 'show'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+
+// untuk backward compatibility (redirect ke /login)
+Route::get('/dokter/login', function () {
+    return redirect('/login');
+});
+
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/lupa-password', [ForgotPasswordController::class, 'showForgotForm'])->name('password.request');
@@ -64,8 +70,8 @@ Route::middleware('auth.session')->group(function () {
 // ================================
 // DOKTER
 // ================================
-Route::get('/dokter/login', [DokterAuthController::class, 'showLogin'])->name('dokter.login');
-Route::post('/dokter/login', [DokterAuthController::class, 'login']);
+Route::get('/login', [LoginController::class, 'show'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
 
 Route::middleware('auth.dokter')->group(function () {
     Route::post('/dokter/logout', [DokterAuthController::class, 'logout'])->name('dokter.logout');

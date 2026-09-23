@@ -21,7 +21,33 @@ class AntriController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return view('antrian.index', compact('antrian'));
+        // Metrik antrian: nomor yang sedang dilayani & sisa antrean,
+        // dihitung per grup dokter + tanggal kunjungan
+        $infoAntrian = [];
+        $grup = [];
+        foreach ($antrian as $a) {
+            $key = $a->dokter_id . '|' . $a->tanggal_kunjungan;
+
+            if (!isset($grup[$key])) {
+                $grup[$key] = Pendaftaran::where('dokter_id', $a->dokter_id)
+                    ->where('tanggal_kunjungan', $a->tanggal_kunjungan)
+                    ->whereIn('status_antrian', ['menunggu', 'dipanggil'])
+                    ->orderBy('nomor_antrian')
+                    ->get();
+            }
+
+            $rujukan = $grup[$key];
+            $sedang  = $rujukan->firstWhere('status_antrian', 'dipanggil');
+            $sisa    = $rujukan->filter(fn($r) => $r->nomor_antrian < $a->nomor_antrian)->count();
+
+            $infoAntrian[$a->id] = [
+                'sedang'       => $sedang ? (int) $sedang->nomor_antrian : null,
+                'sisa'         => in_array($a->status_antrian, ['selesai', 'batal']) ? 0 : $sisa,
+                'berikutnya'   => $sedang ? null : ($rujukan->first() ? (int) $rujukan->first()->nomor_antrian : null),
+            ];
+        }
+
+        return view('antrian.index', compact('antrian', 'infoAntrian'));
     }
 
     // Form daftar antrian

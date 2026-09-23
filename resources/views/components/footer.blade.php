@@ -28,6 +28,16 @@
                         </li>
                         @endif
                     </ul>
+
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode((($klinik->nama_klinik ?? 'Klinik') . ' ' . ($klinik->alamat ?? ''))) }}"
+                        target="_blank" rel="noopener" class="maps-link">
+                        <span class="maps-icon"><i class="bi bi-map-fill"></i></span>
+                        <span class="maps-text">
+                            <span class="maps-title">Buka Lokasi di Google Maps</span>
+                            <span class="maps-sub">Lihat rute & petunjuk arah</span>
+                        </span>
+                        <i class="bi bi-arrow-up-right"></i>
+                    </a>
                     @endif
                 </div>
             </div>
