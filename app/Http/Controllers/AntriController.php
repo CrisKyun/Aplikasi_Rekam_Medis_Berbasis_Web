@@ -21,7 +21,33 @@ class AntriController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return view('antrian.index', compact('antrian'));
+        // Metrik antrian: nomor yang sedang dilayani & sisa antrean,
+        // dihitung per grup dokter + tanggal kunjungan
+        $infoAntrian = [];
+        $grup = [];
+        foreach ($antrian as $a) {
+            $key = $a->dokter_id . '|' . $a->tanggal_kunjungan;
+
+            if (!isset($grup[$key])) {
+                $grup[$key] = Pendaftaran::where('dokter_id', $a->dokter_id)
+                    ->where('tanggal_kunjungan', $a->tanggal_kunjungan)
+                    ->whereIn('status_antrian', ['menunggu', 'dipanggil'])
+                    ->orderBy('nomor_antrian')
+                    ->get();
+            }
+
+            $rujukan = $grup[$key];
+            $sedang  = $rujukan->firstWhere('status_antrian', 'dipanggil');
+            $sisa    = $rujukan->filter(fn($r) => $r->nomor_antrian < $a->nomor_antrian)->count();
+
+            $infoAntrian[$a->id] = [
+                'sedang'       => $sedang ? (int) $sedang->nomor_antrian : null,
+                'sisa'         => in_array($a->status_antrian, ['selesai', 'batal']) ? 0 : $sisa,
+                'berikutnya'   => $sedang ? null : ($rujukan->first() ? (int) $rujukan->first()->nomor_antrian : null),
+            ];
+        }
+
+        return view('antrian.index', compact('antrian', 'infoAntrian'));
     }
 
     // Form daftar antrian
@@ -235,8 +261,84 @@ class AntriController extends Controller
         $nomorAntrian = $nomorTerakhir + 1;
 
         // Hitung estimasi jam (tiap pasien 15 menit)
-        $jamMulai    = Carbon::parse($jadwal->jam_mulai);
-        $estimasiJam = $jamMulai->addMinutes(($nomorAntrian - 1) * 15)->format('H:i');
+        // Gunakan waktu yang lebih besar antara jam_mulai jadwal dokter
+        // dan waktu pendaftaran saat ini, agar estimasi tidak mundur ke jam lalu.
+        // Hitung estimasi jam
+        $tanggalKunjungan = Carbon::parse($request->tanggal_kunjungan)->format('Y-m-d');
+        $hariIni          = Carbon::now()->format('Y-m-d');
+
+        $jamMulaiJadwal = Carbon::parse($jadwal->jam_mulai);
+
+        if ($tanggalKunjungan === $hariIni) {
+            $sekarang = Carbon::now();
+
+            if ($sekarang->gt($jamMulaiJadwal)) {
+                $menitSisa  = 15 - ($sekarang->minute % 15);
+                $menitSisa  = ($menitSisa === 15) ? 0 : $menitSisa;
+                $acuanWaktu = $sekarang->copy()->addMinutes($menitSisa)->second(0);
+            } else {
+                $acuanWaktu = $jamMulaiJadwal->copy();
+            }
+        } else {
+            $acuanWaktu = $jamMulaiJadwal->copy();
+        }
+
+        // Hitung estimasi: acuan + (jumlah antrian sebelum pasien ini × 15 menit)
+        // $nomorAntrian sudah 1-based, jadi antrian sebelumnya = $nomorAntrian - 1
+        // Hitung jumlah antrian aktif sebelumnya
+        $antrianAktifSebelum = Pendaftaran::where('dokter_id', $request->dokter_id)
+            ->where('tanggal_kunjungan', $request->tanggal_kunjungan)
+            ->whereIn('status_antrian', ['menunggu', 'dipanggil'])
+            ->count();
+
+        if ($tanggalKunjungan === $hariIni) {
+            $sekarang = Carbon::now();
+
+            // Acuan awal: waktu terbesar antara jam mulai jadwal dan waktu sekarang
+            $acuanWaktu = $sekarang->gt($jamMulaiJadwal)
+                ? $sekarang->copy()->second(0)
+                : $jamMulaiJadwal->copy();
+
+            // Jika ini antrian pertama (belum ada antrian aktif),
+            // estimasi = waktu pendaftaran / jam mulai + 15 menit
+            if ($antrianAktifSebelum === 0) {
+                $estimasiJam = $acuanWaktu->copy()->addMinutes(15);
+            } else {
+                // Antrian berikutnya: cari estimasi terakhir, lalu +15 menit
+                $estimasiTerakhir = Pendaftaran::where('dokter_id', $request->dokter_id)
+                    ->where('tanggal_kunjungan', $request->tanggal_kunjungan)
+                    ->whereIn('status_antrian', ['menunggu', 'dipanggil'])
+                    ->max('estimasi_jam');
+
+                $estimasiDariAntrian = $estimasiTerakhir
+                    ? Carbon::parse($estimasiTerakhir)->addMinutes(15)
+                    : $acuanWaktu->copy()->addMinutes(15);
+
+                // Ambil yang lebih besar antara estimasi berantai vs waktu sekarang + 15
+                $estimasiDariSekarang = $acuanWaktu->copy()->addMinutes(15);
+
+                $estimasiJam = $estimasiDariAntrian->gt($estimasiDariSekarang)
+                    ? $estimasiDariAntrian
+                    : $estimasiDariSekarang;
+            }
+        } else {
+            // Pendaftaran untuk hari mendatang
+            // Antrian pertama: jam mulai + 15 menit
+            // Antrian berikutnya: estimasi terakhir + 15 menit
+            if ($antrianAktifSebelum === 0) {
+                $estimasiJam = $jamMulaiJadwal->copy()->addMinutes(15);
+            } else {
+                $estimasiTerakhir = Pendaftaran::where('dokter_id', $request->dokter_id)
+                    ->where('tanggal_kunjungan', $request->tanggal_kunjungan)
+                    ->whereIn('status_antrian', ['menunggu', 'dipanggil'])
+                    ->max('estimasi_jam');
+
+                $estimasiJam = $estimasiTerakhir
+                    ? Carbon::parse($estimasiTerakhir)->addMinutes(15)
+                    : $jamMulaiJadwal->copy()->addMinutes(15);
+            }
+        }
+        // $estimasiJam = $acuanWaktu->copy()->addMinutes(($antrianAktifSebelum * 15));
 
         Pendaftaran::create([
             'pasien_id'         => $pasien->id,

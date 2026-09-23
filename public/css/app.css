@@ -1071,6 +1071,83 @@ main {
     font-size: 0.88rem;
 }
 
+/* =========================================
+   INFO REAL-TIME: SEDANG DILAYANI & SISA ANTREAN
+========================================= */
+
+.ticket-live {
+    margin-bottom: 16px;
+}
+
+.live-box {
+    border-radius: 12px;
+    padding: 12px 14px;
+    height: 100%;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.live-label {
+    display: flex;
+    align-items: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.live-value {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #172033;
+}
+
+.live-active {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.live-active .live-label {
+    color: #1d4ed8;
+}
+
+.live-active .live-value {
+    color: #1d4ed8;
+}
+
+.live-now {
+    background: #d1fae5;
+    border-color: #a7f3d0;
+    box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.15);
+}
+
+.live-now .live-label {
+    color: #047857;
+}
+
+.live-now .live-value {
+    color: #047857;
+}
+
+.live-idle .live-value {
+    color: #64748b;
+}
+
+.live-wait {
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.live-wait .live-label {
+    color: #b45309;
+}
+
+.live-wait .live-value {
+    color: #b45309;
+}
+
 .antrian-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr); 

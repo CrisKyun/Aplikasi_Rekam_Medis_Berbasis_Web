@@ -68,7 +68,7 @@
                                 {{ \Carbon\Carbon::parse($a->estimasi_jam)->format('H:i') }}
                             </strong>
                             <span>WIB</span>
-                            <span class="datang-awal" style="margin-top: -3px">
+                            <span class="datang-awal" style="margin-top: -3px; font-style: italic; color: #000000; font-weight: 900;">
                                 (datang 15 menit lebih awal)
                             </span>
                         </div>
@@ -94,6 +94,48 @@
                             Batal
                         </span>
                     @endif
+
+                    @php
+                    $i = $infoAntrian[$a->id] ?? ['sedang' => null, 'sisa' => 0, 'berikutnya' => null];
+                    @endphp
+                    <div class="ticket-live">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="live-box {{ $a->status_antrian === 'dipanggil' ? 'live-now' : ($i['sedang'] !== null ? 'live-active' : 'live-idle') }}">
+                                    <div class="live-label">
+                                        <i class="bi bi-megaphone-fill me-1"></i>Sedang Dilayani
+                                    </div>
+                                    <div class="live-value">
+                                        @if($a->status_antrian === 'dipanggil')
+                                            Anda (No. {{ str_pad($a->nomor_antrian, 2, '0', STR_PAD_LEFT) }})
+                                        @elseif($i['sedang'] !== null)
+                                            No. {{ str_pad($i['sedang'], 2, '0', STR_PAD_LEFT) }}
+                                        @else
+                                            Belum ada
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="live-box live-wait">
+                                    <div class="live-label">
+                                        <i class="bi bi-hourglass-split me-1"></i>Sisa Antrean
+                                    </div>
+                                    <div class="live-value">
+                                        @if($a->status_antrian === 'batal')
+                                            —
+                                        @elseif($a->status_antrian === 'selesai')
+                                            Selesai
+                                        @elseif($i['sisa'] > 0)
+                                            {{ $i['sisa'] }} antrian lagi
+                                        @else
+                                            Giliran Anda!
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="ticket-complaint">
                         <i class="bi bi-chat-left-text me-1"></i>
                         <strong>Keluhan:</strong>
