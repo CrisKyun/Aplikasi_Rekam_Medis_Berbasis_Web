@@ -57,7 +57,7 @@ class UserSeeder extends Seeder
             'nama_lengkap'      => 'Budi Santoso',
             'password'          => Hash::make('budi123'),
             'email'             => 'budi@email.com',
-            'role_id'           => 3,
+            'role_id'           => 4,
             'status'            => 'aktif',
             'expired_at'        => now()->addDays(7),
             'tanggal_registrasi' => now(),

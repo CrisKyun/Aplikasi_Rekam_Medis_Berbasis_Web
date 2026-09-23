@@ -12,7 +12,7 @@
 
 <div class="card shadow-sm border-0">
     <div class="card-header bg-white fw-bold border-0 pt-3">
-        <i class="bi bi-pencil-fill text-warning me-2"></i>Edit Staff — {{ $staff->nama_lengkap }}
+        <i class="bi bi-pencil-fill text-warning me-2"></i>Edit Staff - {{ $staff->nama_lengkap }}
     </div>
     <div class="card-body">
         <form action="/superadmin/staff/{{ $staff->id }}/edit" method="POST">

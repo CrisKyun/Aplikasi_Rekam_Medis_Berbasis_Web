@@ -397,14 +397,17 @@
                         </div>
                     </div>
 
-                    {{-- Badge floating kanan bawah --}}
-                    <div class="float-card-2"
+                    {{-- Badge floating kanan bawah - BISA DIKLIK --}}
+                    <a href="{{ session('user_id') ? '/antrian/daftar' : '/login' }}"
                         style="position:absolute;bottom:-10px;right:0;
-                                background:#fff;border-radius:14px;padding:0.75rem 1rem;
-                                box-shadow:0 8px 24px rgba(0,0,0,0.15);
-                                display:flex;align-items:center;gap:0.5rem;">
+                        background:#fff;border-radius:14px;padding:0.75rem 1rem;
+                        box-shadow:0 8px 24px rgba(0,0,0,0.15);
+                        display:flex;align-items:center;gap:0.5rem;
+                        text-decoration:none;transition:all 0.3s ease;"
+                        onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 28px rgba(0,0,0,0.2)'"
+                        onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15)'">
                         <div style="width:36px;height:36px;background:#dcfce7;border-radius:10px;
-                                    display:flex;align-items:center;justify-content:center;">
+                            display:flex;align-items:center;justify-content:center;">
                             <i class="bi bi-ticket-perforated-fill" style="color:#16a34a;"></i>
                         </div>
                         <div>
@@ -412,10 +415,10 @@
                                 Antrian Online
                             </p>
                             <p style="font-size:0.7rem;color:#64748b;margin:0;">
-                                Tidak perlu antre lama
+                                {{ session('user_id') ? 'Daftar sekarang →' : 'Login untuk mendaftar →' }}
                             </p>
                         </div>
-                    </div>
+                    </a>
 
                     {{-- Badge floating kiri atas --}}
                     <div style="position:absolute;top:-10px;left:0;
